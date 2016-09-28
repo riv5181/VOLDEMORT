@@ -1,0 +1,40 @@
+# COMPANY SWITCH
+en
+conf t
+hostname CSwitch
+vlan 10
+name DMZ
+exit
+vlan 20
+name Users
+exit
+int r f0/1-f0/12
+sw mo a
+sw a v 10
+exit
+int r f0/13-f0/24
+sw mo a
+sw a v 20
+exit
+int g0/1
+sw mo t
+sw t a v 10,20
+ex
+do w
+
+# COMPANY ROUTER
+en
+conf t
+hostname CRouter
+int g0/0.10
+encapsulation dot1q 10
+ip add 192.168.1.1 255.255.255.0
+exit
+int g0/0.20
+encapsulation dot1q 20
+ip add 192.168.2.1 255.255.255.0
+exit
+int g0/0
+no shut
+exit
+do w
