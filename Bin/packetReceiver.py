@@ -10,7 +10,9 @@ from struct import *
 import datetime
 import pcapy
 import sys
+from classes import packet as thePacket
 
+packets = []
 
 def main(argv):
     # list all devices
@@ -41,6 +43,7 @@ def main(argv):
         (header, packet) = cap.next()
         # print ('%s: captured %d bytes, truncated to %d bytes' %(datetime.datetime.now(), header.getlen(), header.getcaplen()))
         parse_packet(packet)
+        print('TOTAL CAPTURED PACKETS:' + str(len(packets)))
 
 
 # Convert a string of 6 characters of ethernet address into a dash separated hex string
@@ -48,9 +51,13 @@ def eth_addr(a):
     b = "%.2x:%.2x:%.2x:%.2x:%.2x:%.2x" % (ord(a[0]), ord(a[1]), ord(a[2]), ord(a[3]), ord(a[4]), ord(a[5]))
     return b
 
+def getCollectedPackets(x):
+    x = packets
 
 # function to parse a packet
 def parse_packet(packet):
+    global packets
+    tempPacket = thePacket('','','','','','','')
     # parse ethernet header
     eth_length = 14
 
@@ -59,6 +66,9 @@ def parse_packet(packet):
     eth_protocol = socket.ntohs(eth[2])
     print ('Destination MAC : ' + eth_addr(packet[0:6]) + ' Source MAC : ' + eth_addr(packet[6:12]) + ' Protocol : ' + str(
         eth_protocol))
+
+    setattr(tempPacket,'sourceMAC',eth_addr(packet[6:12]))
+    setattr(tempPacket, 'destMAC', eth_addr(packet[0:6]))
 
     # Parse IP packets, IP Protocol number = 8
     if eth_protocol == 8:
@@ -82,6 +92,9 @@ def parse_packet(packet):
 
         print ('Version : ' + str(version) + ' IP Header Length : ' + str(ihl) + ' TTL : ' + str(ttl) + ' Protocol : ' + str(
             protocol) + ' Source Address : ' + str(s_addr) + ' Destination Address : ' + str(d_addr))
+
+        setattr(tempPacket, 'sourceIP', str(s_addr))
+        setattr(tempPacket, 'destIP', str(d_addr))
 
         # TCP protocol
         if protocol == 6:
@@ -109,6 +122,11 @@ def parse_packet(packet):
 
             print ('Data Size: ' + str(data_size) + ' bytes')
 
+            setattr(tempPacket, 'protocol', 'TCP')
+            setattr(tempPacket, 'service', str(dest_port))
+            setattr(tempPacket, 'size', str(data_size))
+            packets.append(tempPacket)
+
         # ICMP Packets
         elif protocol == 1:
             u = iph_length + eth_length
@@ -131,6 +149,11 @@ def parse_packet(packet):
             data = packet[h_size:]
 
             print ('Data Size: ' + str(data_size) + ' bytes')
+
+            setattr(tempPacket, 'protocol', 'ICMP')
+            setattr(tempPacket, 'service', 'ECHO-RETURN')
+            setattr(tempPacket, 'size', str(data_size))
+            packets.append(tempPacket)
 
         # UDP packets
         elif protocol == 17:
@@ -156,6 +179,11 @@ def parse_packet(packet):
             data = packet[h_size:]
 
             print ('Data Size: ' + str(data_size) + ' bytes')
+
+            setattr(tempPacket, 'protocol', 'UDP')
+            setattr(tempPacket, 'service', str(dest_port))
+            setattr(tempPacket, 'size', str(data_size))
+            packets.append(tempPacket)
 
         # some other IP packet like IGMP
         else:

@@ -1,11 +1,4 @@
 class packet:
-    sourceIP = ''
-    destIP = ''
-    sourceMAC = ''
-    destMAC = ''
-    protocol = ''
-    service = ''
-    size = ''
 
     def __init__(self,sourceIP,destIP,sourceMAC,destMAC,protocol,service,size):
         self.sourceIP = sourceIP
