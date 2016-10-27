@@ -20,10 +20,11 @@ no shut
 exit
 access-list 1 permit any
 ip nat in s l 1 int s0/0/0 overload
+ip nat in s s t 192.168.1.20 80 1.2.3.5 80
 ip route 0.0.0.0 0.0.0.0 s0/0/0
 ip dhcp ex 192.168.0.1 192.168.1.255
 ip dhcp pool SWIMMING
-net 192.168.0.0 255.255.0.0
+network 192.168.0.0 255.255.0.0
 def 192.168.1.1
 exit
 do w
