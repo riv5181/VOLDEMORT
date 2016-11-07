@@ -11,8 +11,10 @@ import datetime
 import pcapy
 import sys
 from classes import packet as thePacket
+import time
 
 packets = []
+startTime = time.time()
 
 def main(argv):
     # list all devices
@@ -43,7 +45,11 @@ def main(argv):
         (header, packet) = cap.next()
         # print ('%s: captured %d bytes, truncated to %d bytes' %(datetime.datetime.now(), header.getlen(), header.getcaplen()))
         parse_packet(packet)
+
+        currentTime = int(time.time() - startTime)
+        print
         print('TOTAL CAPTURED PACKETS:' + str(len(packets)))
+        print('ELAPSED: ' + str(currentTime))
 
 
 # Convert a string of 6 characters of ethernet address into a dash separated hex string
