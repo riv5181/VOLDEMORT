@@ -1,10 +1,3 @@
-'''
-Packet sniffer in python using the pcapy python library
-
-Project website
-http://oss.coresecurity.com/projects/pcapy.html
-'''
-
 import socket
 from struct import *
 import datetime
@@ -14,9 +7,12 @@ from classes import packet as thePacket
 import time
 
 packets = []
+finalpackets = []
 startTime = time.time()
+currentTime = 0
 
-def main(argv):
+def obtainPackets():
+    global startTime, currentTime, packets
     # list all devices
     devices = pcapy.findalldevs()
     print (devices)
@@ -50,6 +46,12 @@ def main(argv):
         print
         print('TOTAL CAPTURED PACKETS:' + str(len(packets)))
         print('ELAPSED: ' + str(currentTime))
+        print
+
+        if(currentTime >= 300):
+            startTime = time.time()
+            finalpackets = packets
+            packets = []
 
 
 # Convert a string of 6 characters of ethernet address into a dash separated hex string
@@ -57,8 +59,11 @@ def eth_addr(a):
     b = "%.2x:%.2x:%.2x:%.2x:%.2x:%.2x" % (ord(a[0]), ord(a[1]), ord(a[2]), ord(a[3]), ord(a[4]), ord(a[5]))
     return b
 
-def getCollectedPackets(x):
-    x = packets
+def getCollectedPackets():
+    global finalpackets
+    x = finalpackets
+    finalpackets = []
+    return x
 
 # function to parse a packet
 def parse_packet(packet):
