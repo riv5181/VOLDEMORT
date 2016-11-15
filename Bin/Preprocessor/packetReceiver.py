@@ -1,18 +1,15 @@
-import socket
+import socket, pcapy, sys, time, datetime
 from struct import *
-import datetime
-import pcapy
-import sys
 from classes import packet as thePacket
-import time
 
 packets = []
 finalpackets = []
 startTime = time.time()
 currentTime = 0
 
-def obtainPackets():
+def obtainPackets(device, maxTime):
     global startTime, currentTime, packets
+    '''
     # list all devices
     devices = pcapy.findalldevs()
     print (devices)
@@ -26,18 +23,19 @@ def obtainPackets():
 
     print ("Sniffing device " + dev)
 
-    '''
+
     open device
     # Arguments here are:
     #   device
     #   snaplen (maximum number of bytes to capture _per_packet_)
     #   promiscious mode (1 for true)
     #   timeout (in milliseconds)
+
     '''
-    cap = pcapy.open_live(dev, 65536, 1, 0)
+    cap = pcapy.open_live(device, 65536, 1, 0)
 
     # start sniffing packets
-    while (1):
+    while (currentTime < maxTime):
         (header, packet) = cap.next()
         # print ('%s: captured %d bytes, truncated to %d bytes' %(datetime.datetime.now(), header.getlen(), header.getcaplen()))
         parse_packet(packet)
@@ -48,23 +46,19 @@ def obtainPackets():
         print('ELAPSED: ' + str(currentTime))
         print
 
-        if(currentTime >= 300):
-            startTime = time.time()
-            finalpackets = packets
-            packets = []
-
+    return packets
 
 # Convert a string of 6 characters of ethernet address into a dash separated hex string
 def eth_addr(a):
     b = "%.2x:%.2x:%.2x:%.2x:%.2x:%.2x" % (ord(a[0]), ord(a[1]), ord(a[2]), ord(a[3]), ord(a[4]), ord(a[5]))
     return b
-
+'''
 def getCollectedPackets():
     global finalpackets
     x = finalpackets
-    finalpackets = []
+    #finalpackets = []
     return x
-
+'''
 # function to parse a packet
 def parse_packet(packet):
     global packets

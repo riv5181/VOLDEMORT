@@ -1,5 +1,5 @@
 class adminSettings:
-    maxTime = 300 #measured in seconds
+    maxTime = 60 #measured in seconds
     device = 'ens33' #network port that will be used
     tcpThreshold = 50
     udpThreshold = 50
