@@ -10,20 +10,6 @@ currentTime = 0
 def obtainPackets(device, maxTime):
     global startTime, currentTime, packets
     '''
-    # list all devices
-    devices = pcapy.findalldevs()
-    print (devices)
-
-    # ask user to enter device name to sniff
-    print ("Available devices are :")
-    for d in devices:
-        print (d)
-
-    dev = raw_input("Enter device name to sniff : ")
-
-    print ("Sniffing device " + dev)
-
-
     open device
     # Arguments here are:
     #   device
