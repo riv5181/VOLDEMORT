@@ -39,13 +39,7 @@ def obtainPackets(device, maxTime):
 def eth_addr(a):
     b = "%.2x:%.2x:%.2x:%.2x:%.2x:%.2x" % (ord(a[0]), ord(a[1]), ord(a[2]), ord(a[3]), ord(a[4]), ord(a[5]))
     return b
-'''
-def getCollectedPackets():
-    global finalpackets
-    x = finalpackets
-    #finalpackets = []
-    return x
-'''
+
 # function to parse a packet
 def parse_packet(packet):
     global packets
@@ -100,8 +94,11 @@ def parse_packet(packet):
             dest_port = tcph[1]
             sequence = tcph[2]
             acknowledgement = tcph[3]
-            doff_reserved = tcph[4]
+            doff_reserved = tcph[4] #tackle this for identifying if syn or syn0ack
             tcph_length = doff_reserved >> 4
+            flag = tcph[5] #2 is SYN, 18 is SYN-ACK, 16 is ACK; urg, ack, psh, rst, syn, fin
+
+            print(flag)#str(flag[1]) + ' ' + str(flag[4]))
 
             print ('Source Port : ' + str(source_port) + ' Dest Port : ' + str(dest_port) + ' Sequence Number : ' + str(
                 sequence) + ' Acknowledgement : ' + str(acknowledgement) + ' TCP header length : ' + str(tcph_length) + ' PCKT: TCP')
