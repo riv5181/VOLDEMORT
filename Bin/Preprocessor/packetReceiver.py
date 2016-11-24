@@ -9,6 +9,7 @@ currentTime = 0
 
 def obtainPackets(device, maxTime):
     global startTime, currentTime, packets
+
     '''
     open device
     # Arguments here are:
