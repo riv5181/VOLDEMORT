@@ -1,2 +1,2 @@
 from packetReceiver import obtainPackets
-#from packetReceiver import getCollectedPackets
+from filterPackets import filterObtainedPackets
