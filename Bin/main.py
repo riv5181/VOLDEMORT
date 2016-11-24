@@ -15,6 +15,8 @@ def getPackets():
     Preprocessor.filterPackets(packets, device1)
     print('AFTER FILTER: ' + str(len(packets)))
 
+
+
 def collectPackets():
     while (packets <= 0):
         print('NO PACKETS YET!')

@@ -19,4 +19,6 @@ def filterObtainedPackets(oPackets, device):
 
         i = i + 1
 
+        #remove other unnecessary TCP and UDP (only TCP HTTP GET, POST, SYN, SYN-ACK, UDP DNS, DHCP and ICMP ECHO-REPLY)
+
     return oPackets
