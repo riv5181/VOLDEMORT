@@ -13,12 +13,19 @@ def getIPAddress(ifname):
 def filterObtainedPackets(oPackets, device):
     i = 0
 
+    #this segment already removes unnecessary ICMP
     while i < len(oPackets):
         if oPackets[i].sourceIP == getIPAddress(device):
-            oPackets.remove(i)
+            oPackets.remove(oPackets[i])
+
+        if oPackets[i].protocol == 'TCP' and oPackets[i].service != 'HTTP':
+            if oPackets[i].flag == 'OTHER':
+                oPackets.remove(oPackets[i])
+
+        if oPackets[i].protocol == 'UDP':
+            if oPackets[i].service == 'OTHER':
+                oPackets.remove(oPackets[i])
 
         i = i + 1
-
-        #remove other unnecessary TCP and UDP (only TCP HTTP GET, POST, SYN, SYN-ACK, UDP DNS, DHCP and ICMP ECHO-REPLY)
 
     return oPackets

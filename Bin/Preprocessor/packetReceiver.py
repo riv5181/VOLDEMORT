@@ -43,7 +43,8 @@ def eth_addr(a):
 # function to parse a packet
 def parse_packet(packet):
     global packets
-    tempPacket = thePacket('','','','','','','')
+    tempPacket = thePacket('','','','','','','','')
+    pktFlag = ''
     # parse ethernet header
     eth_length = 14
 
@@ -66,6 +67,7 @@ def parse_packet(packet):
         iph = unpack('!BBHHHBBH4s4s', ip_header)
 
         version_ihl = iph[0]
+        packet_size = iph[2]
         version = version_ihl >> 4
         ihl = version_ihl & 0xF
 
@@ -98,10 +100,21 @@ def parse_packet(packet):
             tcph_length = doff_reserved >> 4
             flag = tcph[5] #2 is SYN, 18 is SYN-ACK, 16 is ACK; urg, ack, psh, rst, syn, fin
 
-            print(flag)#str(flag[1]) + ' ' + str(flag[4]))
+            if flag == 2:
+                pktFlag = 'SYN'
+
+            elif flag == 18:
+                pktFlag = 'SYN-ACK'
+
+            #elif flag == 16:
+                #pktFlag = 'ACK'
+
+            else:
+                pktFlag = 'OTHER'
 
             print ('Source Port : ' + str(source_port) + ' Dest Port : ' + str(dest_port) + ' Sequence Number : ' + str(
-                sequence) + ' Acknowledgement : ' + str(acknowledgement) + ' TCP header length : ' + str(tcph_length) + ' PCKT: TCP')
+                sequence) + ' Acknowledgement : ' + str(acknowledgement) + ' TCP header length : ' + str(tcph_length) +
+                   ' ' + 'Flag : ' + pktFlag + ' PCKT : TCP')
 
             h_size = eth_length + iph_length + tcph_length * 4
             data_size = len(packet) + h_size #includes packet header size
@@ -113,6 +126,7 @@ def parse_packet(packet):
 
             setattr(tempPacket, 'protocol', 'TCP')
             setattr(tempPacket, 'service', str(dest_port))
+            setattr(tempPacket, 'flag', str(pktFlag))
             setattr(tempPacket, 'size', str(data_size))
             packets.append(tempPacket)
 
@@ -140,7 +154,8 @@ def parse_packet(packet):
             print ('Data Size: ' + str(data_size) + ' bytes')
 
             setattr(tempPacket, 'protocol', 'ICMP')
-            setattr(tempPacket, 'service', 'ECHO-RETURN')
+            setattr(tempPacket, 'service', 'ECHO-REPLY')
+            setattr(tempPacket, 'flag', 'NULL')
             setattr(tempPacket, 'size', str(data_size))
             packets.append(tempPacket)
 
@@ -166,11 +181,22 @@ def parse_packet(packet):
 
             # get data from the packet
             data = packet[h_size:]
+            serv = ''
+
+            if dest_port == 53:
+                serv = 'DNS'
+
+            elif dest_port == 67 or dest_port == 68:
+                serv = 'DHCP'
+
+            else:
+                serv = 'OTHER'
 
             print ('Data Size: ' + str(data_size) + ' bytes')
 
             setattr(tempPacket, 'protocol', 'UDP')
-            setattr(tempPacket, 'service', str(dest_port))
+            setattr(tempPacket, 'service', serv)
+            setattr(tempPacket, 'flag', 'NULL')
             setattr(tempPacket, 'size', str(data_size))
             packets.append(tempPacket)
 
