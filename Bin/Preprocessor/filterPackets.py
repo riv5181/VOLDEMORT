@@ -12,9 +12,13 @@ def getIPAddress(ifname):
 
 def filterObtainedPackets(oPackets, device):
     i = 0
+    max = len(oPackets)
 
     #this segment already removes unnecessary ICMP
-    while i < len(oPackets):
+    while i < max:
+        if i >= max:
+            break
+
         if oPackets[i].sourceIP == getIPAddress(device):
             oPackets.remove(oPackets[i])
 
@@ -26,6 +30,7 @@ def filterObtainedPackets(oPackets, device):
             if oPackets[i].service == 'OTHER':
                 oPackets.remove(oPackets[i])
 
+        max = len(oPackets)
         i = i + 1
 
     return oPackets

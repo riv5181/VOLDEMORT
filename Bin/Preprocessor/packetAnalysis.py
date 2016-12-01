@@ -12,15 +12,15 @@ def getTotalDataSize(oPackets):
     i = 0
     total = 0
     while i < len(oPackets):
-        total = total + oPackets[i].size
+        total = total + int(oPackets[i].size)
         i = i + 1
     return total
 
 def calculateThreshold(totalThresh, threshPercentage):
-    return totalThresh / threshPercentage
+    return int(totalThresh) / int(threshPercentage)
 
 def printStatus(captured, threshold):
-    if captured < threshold:
+    if int(captured) < int(threshold):
         return 'NORMAL'
 
     else:
