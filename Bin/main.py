@@ -12,7 +12,7 @@ def getPackets():
     packets = Preprocessor.obtainPackets(device1, maxTime1)
 
     print('BEFORE FILTER: ' + str(len(packets)))
-    Preprocessor.filterObtainedPackets(packets, device1)
+    packets = Preprocessor.filterObtainedPackets(packets, device1)
     print('AFTER FILTER: ' + str(len(packets)))
 
     Preprocessor.analyzePacketswThresh(packets,StatControl.adminSettings)

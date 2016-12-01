@@ -16,17 +16,14 @@ def filterObtainedPackets(oPackets, device):
 
     #this segment already removes unnecessary ICMP
     while i < max:
-        if i >= max:
-            break
-
         if oPackets[i].sourceIP == getIPAddress(device):
             oPackets.remove(oPackets[i])
 
-        if oPackets[i].protocol == 'TCP' and oPackets[i].service != 'HTTP':
+        elif oPackets[i].protocol == 'TCP' and oPackets[i].service != 'HTTP':
             if oPackets[i].flag == 'OTHER':
                 oPackets.remove(oPackets[i])
 
-        if oPackets[i].protocol == 'UDP':
+        elif oPackets[i].protocol == 'UDP':
             if oPackets[i].service == 'OTHER':
                 oPackets.remove(oPackets[i])
 

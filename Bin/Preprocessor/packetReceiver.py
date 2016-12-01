@@ -127,7 +127,7 @@ def parse_packet(packet):
             setattr(tempPacket, 'protocol', 'TCP')
             setattr(tempPacket, 'service', str(dest_port))
             setattr(tempPacket, 'flag', str(pktFlag))
-            setattr(tempPacket, 'size', str(data_size))
+            setattr(tempPacket, 'size', data_size)
             packets.append(tempPacket)
 
         # ICMP Packets
@@ -156,7 +156,7 @@ def parse_packet(packet):
             setattr(tempPacket, 'protocol', 'ICMP')
             setattr(tempPacket, 'service', 'ECHO-REPLY')
             setattr(tempPacket, 'flag', 'NULL')
-            setattr(tempPacket, 'size', str(data_size))
+            setattr(tempPacket, 'size', data_size)
             packets.append(tempPacket)
 
         # UDP packets
@@ -197,7 +197,7 @@ def parse_packet(packet):
             setattr(tempPacket, 'protocol', 'UDP')
             setattr(tempPacket, 'service', serv)
             setattr(tempPacket, 'flag', 'NULL')
-            setattr(tempPacket, 'size', str(data_size))
+            setattr(tempPacket, 'size', data_size)
             packets.append(tempPacket)
 
         # some other IP packet like IGMP

@@ -1,36 +1,41 @@
 import sys, socket
 
-def getPacketsProtocol(oPackets, protocol):
+def getPacketsProtocol(oPackets1, protocol1):
     i = 0
-    while i < len(oPackets):
-        if oPackets[i].protocol != protocol:
-            oPackets.remove(oPackets[i])
-        i = i + 1
-    return oPackets
+    max = len(oPackets1)
 
-def getTotalDataSize(oPackets):
+    while i < max:
+        if oPackets1[i].protocol != protocol1:
+            oPackets1.remove(oPackets1[i])
+
+        max = len(oPackets1)
+        i = i + 1
+
+    return oPackets1
+
+def getTotalDataSize(oPackets2):
     i = 0
     total = 0
-    while i < len(oPackets):
-        total = total + int(oPackets[i].size)
+    while i < len(oPackets2):
+        total = total + oPackets2[i].size
         i = i + 1
     return total
 
 def calculateThreshold(totalThresh, threshPercentage):
     return int(totalThresh) / int(threshPercentage)
 
-def printStatus(captured, threshold):
-    if int(captured) < int(threshold):
+def printStatus(captured, threshold1):
+    if int(captured) < int(threshold1):
         return 'NORMAL'
 
     else:
         return 'ABNORMAL'
 
-def analyzePacketswThresh(oPackets, currSettings):
+def analyzePacketswThresh(oPackets0, currSettings):
 
-    tcpPackets = getPacketsProtocol(oPackets,'TCP')
-    udpPackets = getPacketsProtocol(oPackets, 'UDP')
-    icmpPackets = getPacketsProtocol(oPackets, 'ICMP')
+    tcpPackets = getPacketsProtocol(oPackets0,'TCP')
+    udpPackets = getPacketsProtocol(oPackets0, 'UDP')
+    icmpPackets = getPacketsProtocol(oPackets0, 'ICMP')
 
     tcpTotalDSize = getTotalDataSize(tcpPackets)
     udpTotalDSize = getTotalDataSize(udpPackets)
@@ -40,22 +45,25 @@ def analyzePacketswThresh(oPackets, currSettings):
     udpThresh = calculateThreshold(currSettings.bandwidth, currSettings.udpThreshold)
     icmpThresh = calculateThreshold(currSettings.bandwidth, currSettings.icmpThreshold)
 
-    print ('BANDWIDTH: ' + currSettings.bandwidth + ' bytes')
+    print ('BANDWIDTH: ' + str(currSettings.bandwidth) + ' bytes')
     print
     print ('----- TCP INFORMATION-----')
-    print ('THRESHOLD: ' + tcpThresh + ' bytes, (' + currSettings.tcpThreshold + '% of bandwidth)')
-    print ('TOTAL CAPTURED TCP SIZE: ' + tcpTotalDSize)
-    print ('STATUS: ' + printStatus(tcpTotalDSize,tcpThresh))
+    print ('THRESHOLD: ' + str(tcpThresh) + ' bytes, (' + str(currSettings.tcpThreshold) + '% of bandwidth)')
+    print ('PACKETS CAPTURED: ' + str(len(tcpPackets)))
+    print ('TOTAL CAPTURED TCP SIZE: ' + str(tcpTotalDSize) + ' bytes')
+    print ('STATUS: ' + str(printStatus(tcpTotalDSize,tcpThresh)))
     print
     print('----- UDP INFORMATION-----')
-    print('THRESHOLD: ' + udpThresh + ', bytes (' + currSettings.udpThreshold + '% of bandwidth)')
-    print('TOTAL CAPTURED UDP SIZE: ' + udpTotalDSize)
-    print('STATUS: ' + printStatus(udpTotalDSize, udpThresh))
+    print('THRESHOLD: ' + str(udpThresh) + ', bytes (' + str(currSettings.udpThreshold) + '% of bandwidth)')
+    print('PACKETS CAPTURED: ' + str(len(udpPackets)))
+    print('TOTAL CAPTURED UDP SIZE: ' + str(udpTotalDSize) + ' bytes')
+    print('STATUS: ' + str(printStatus(udpTotalDSize, udpThresh)))
     print
     print('----- ICMP INFORMATION-----')
-    print('THRESHOLD: ' + icmpThresh + ', bytes (' + currSettings.icmpThreshold + '% of bandwidth)')
-    print('TOTAL CAPTURED ICMP SIZE: ' + icmpTotalDSize)
-    print('STATUS: ' + printStatus(icmpTotalDSize, icmpThresh))
+    print('THRESHOLD: ' + str(icmpThresh) + ', bytes (' + str(currSettings.icmpThreshold) + '% of bandwidth)')
+    print('PACKETS CAPTURED: ' + str(len(icmpPackets)))
+    print('TOTAL CAPTURED ICMP SIZE: ' + str(icmpTotalDSize) + ' bytes')
+    print('STATUS: ' + str(printStatus(icmpTotalDSize, icmpThresh)))
 
 
 
