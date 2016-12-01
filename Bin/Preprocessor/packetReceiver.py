@@ -121,11 +121,18 @@ def parse_packet(packet):
 
             # get data from the packet
             data = packet[h_size:]
+            serv = ''
+
+            if dest_port == 80:
+                serv = 'HTTP'
+
+            else:
+                serv = 'OTHER'
 
             print ('Data Size: ' + str(data_size) + ' bytes')
 
             setattr(tempPacket, 'protocol', 'TCP')
-            setattr(tempPacket, 'service', str(dest_port))
+            setattr(tempPacket, 'service', serv)
             setattr(tempPacket, 'flag', str(pktFlag))
             setattr(tempPacket, 'size', data_size)
             packets.append(tempPacket)

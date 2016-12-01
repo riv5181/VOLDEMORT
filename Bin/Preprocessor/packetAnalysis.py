@@ -1,6 +1,11 @@
 import sys, socket
 
+tcpPackets = []
+udpPackets = []
+icmpPackets = []
+
 def getPacketsProtocol(oPackets1, protocol1):
+    global tcpPackets, udpPackets, icmpPackets
     i = 0
     max = len(oPackets1)
 
@@ -10,6 +15,16 @@ def getPacketsProtocol(oPackets1, protocol1):
 
         max = len(oPackets1)
         i = i + 1
+
+    print (str(len(oPackets1)))
+    if protocol1 == 'TCP':
+        tcpPackets = oPackets1
+
+    elif protocol1 == 'UDP':
+        udpPackets = oPackets1
+
+    elif protocol1 == 'ICMP':
+        icmpPackets = oPackets1
 
     return oPackets1
 
@@ -32,10 +47,11 @@ def printStatus(captured, threshold1):
         return 'ABNORMAL'
 
 def analyzePacketswThresh(oPackets0, currSettings):
+    global tcpPackets, udpPackets, icmpPackets
 
-    tcpPackets = getPacketsProtocol(oPackets0,'TCP')
-    udpPackets = getPacketsProtocol(oPackets0, 'UDP')
-    icmpPackets = getPacketsProtocol(oPackets0, 'ICMP')
+    getPacketsProtocol(oPackets0,'TCP')
+    getPacketsProtocol(oPackets0, 'UDP')
+    getPacketsProtocol(oPackets0, 'ICMP')
 
     tcpTotalDSize = getTotalDataSize(tcpPackets)
     udpTotalDSize = getTotalDataSize(udpPackets)
