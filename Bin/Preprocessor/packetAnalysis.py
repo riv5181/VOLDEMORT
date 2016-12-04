@@ -4,29 +4,23 @@ tcpPackets = []
 udpPackets = []
 icmpPackets = []
 
-def getPacketsProtocol(oPackets1, protocol1):
+def getPacketsProtocol(oPackets1):
     global tcpPackets, udpPackets, icmpPackets
     i = 0
     max = len(oPackets1)
 
     while i < max:
-        if oPackets1[i].protocol != protocol1:
-            oPackets1.remove(oPackets1[i])
+        print (oPackets1[i].protocol)
+        if oPackets1[i].protocol == 'TCP':
+            tcpPackets.append(oPackets1[i])
 
-        max = len(oPackets1)
+        elif oPackets1[i].protocol == 'UDP':
+            udpPackets.append(oPackets1[i])
+
+        elif oPackets1[i].protocol == 'ICMP':
+            icmpPackets.append(oPackets1[i])
+
         i = i + 1
-
-    print (str(len(oPackets1)))
-    if protocol1 == 'TCP':
-        tcpPackets = oPackets1
-
-    elif protocol1 == 'UDP':
-        udpPackets = oPackets1
-
-    elif protocol1 == 'ICMP':
-        icmpPackets = oPackets1
-
-    return oPackets1
 
 def getTotalDataSize(oPackets2):
     i = 0
@@ -49,9 +43,7 @@ def printStatus(captured, threshold1):
 def analyzePacketswThresh(oPackets0, currSettings):
     global tcpPackets, udpPackets, icmpPackets
 
-    getPacketsProtocol(oPackets0,'TCP')
-    getPacketsProtocol(oPackets0, 'UDP')
-    getPacketsProtocol(oPackets0, 'ICMP')
+    getPacketsProtocol(oPackets0)
 
     tcpTotalDSize = getTotalDataSize(tcpPackets)
     udpTotalDSize = getTotalDataSize(udpPackets)

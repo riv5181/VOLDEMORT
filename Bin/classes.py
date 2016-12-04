@@ -1,3 +1,4 @@
+#Assigns the packet class. Contains necessary stuff in a packet to be analyzed.
 class packet:
 
     def __init__(self,sourceIP,destIP,sourceMAC,destMAC,protocol,service,flag,size):
