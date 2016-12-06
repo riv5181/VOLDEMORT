@@ -5,7 +5,7 @@ class adminSettings:
     udpThreshold = 30 # percentage with other thresholds; total with other thresholds should be 100
     icmpThreshold = 20 # percentage with other thresholds; total with other thresholds should be 100
     overallThreshold = 30 # threshold for all the protocols involved
-    bandwidth = 1073741824 #Bandwidth of the network. Measured in bytes
+    bandwidth = 10000000 #Bandwidth of the network. Measured in bytes. Use router interface bandwidth.
     cycle_time = 0
     tbwidth_util = 0
     suspicion_counter = 0
