@@ -30,7 +30,7 @@ def getTotalDataSize(oPackets2):
     return total
 
 def calculateThreshold(totalThresh, threshPercentage):
-    return int(totalThresh) / int(threshPercentage)
+    return 0.01 * (int(totalThresh) * int(threshPercentage))
 
 def printStatus(captured, threshold1):
     if int(captured) < int(threshold1):
