@@ -1,10 +1,16 @@
 class adminSettings:
-    maxTime = 300 # measured in seconds
+    maxTime = 10 # measured in seconds
     device = 'ens33' # network port that will be used
     tcpThreshold = 50 # percentage with other thresholds; total with other thresholds should be 100
     udpThreshold = 30 # percentage with other thresholds; total with other thresholds should be 100
     icmpThreshold = 20 # percentage with other thresholds; total with other thresholds should be 100
-    overallThreshold = 30 # threshold for all the protocols involved
+    #overallThreshold = 30 # threshold for all the protocols involved
+    synThresh = 25 # percentage with other services under TCP; total with other TCP services should be 100
+    synackThresh = 25 # percentage with other services under TCP; total with other TCP services should be 100
+    httpGETThresh = 25 # percentage with other services under TCP; total with other TCP services should be 100
+    httpPOSThresh = 25 # percentage with other services under TCP; total with other TCP services should be 100
+    dnsThresh = 50 # percentage with other services under UDP; total with other UDP services should be 100
+    dhcpThresh = 50 # percentage with other services under UDP; total with other UDP services should be 100
     bandwidth = 10000000 #Bandwidth of the network. Measured in bytes. Use router interface bandwidth.
     cycle_time = 0
     tbwidth_util = 0

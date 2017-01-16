@@ -86,11 +86,11 @@ def analyzePacketswThresh(oPackets0, currSettings):
     udpThresh = calculateThreshold(currSettings.bandwidth, currSettings.udpThreshold)
     icmpThresh = calculateThreshold(currSettings.bandwidth, currSettings.icmpThreshold)
 
-    if tcpTotalDSize > tcpThresh or udpTotalDSize > udpThresh or icmpTotalDSize > icmpThresh:
-        return oPackets0
+    #if tcpTotalDSize > tcpThresh or udpTotalDSize > udpThresh or icmpTotalDSize > icmpThresh:
+    return oPackets0
 
-    else:
-        return newPackets
+    #else:
+        #return newPackets
 
 
     #Get network bandwidth then get average size of packets per protocol
