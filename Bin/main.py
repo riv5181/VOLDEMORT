@@ -1,9 +1,10 @@
-import sys, socket, fcntl, struct, Preprocessor, StatControl
+import sys, socket, fcntl, struct, Preprocessor, StatControl, FloodDetection
 from threading import Thread
 from classes import packet as thePacket
 
 
 packets = []
+flows = []
 device1 = StatControl.adminSettings.device
 maxTime1 = StatControl.adminSettings.maxTime
 
@@ -15,8 +16,10 @@ def getPackets():
     packets = Preprocessor.filterObtainedPackets(packets, device1)
     print('AFTER FILTER: ' + str(len(packets)))
 
-    Preprocessor.analyzePacketswThresh(packets,StatControl.adminSettings)
+    packets = Preprocessor.analyzePacketswThresh(packets,StatControl.adminSettings)
 
+    if len(packets) > 0:
+        flows = FloodDetection.fdModule(packets)
 
 
 def collectPackets():

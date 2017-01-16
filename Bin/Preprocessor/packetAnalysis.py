@@ -10,7 +10,6 @@ def getPacketsProtocol(oPackets1):
     max = len(oPackets1)
 
     while i < max:
-        print (oPackets1[i].protocol)
         if oPackets1[i].protocol == 'TCP':
             tcpPackets.append(oPackets1[i])
 
@@ -39,7 +38,7 @@ def printStatus(captured, threshold1):
 
     else:
         return 'ABNORMAL'
-
+'''
 def analyzePacketswThresh(oPackets0, currSettings):
     global tcpPackets, udpPackets, icmpPackets
 
@@ -72,7 +71,26 @@ def analyzePacketswThresh(oPackets0, currSettings):
     print('PACKETS CAPTURED: ' + str(len(icmpPackets)))
     print('TOTAL CAPTURED ICMP SIZE: ' + str(icmpTotalDSize) + ' bytes')
     print('STATUS: ' + str(printStatus(icmpTotalDSize, icmpThresh)))
+'''
+def analyzePacketswThresh(oPackets0, currSettings):
+    global tcpPackets, udpPackets, icmpPackets
+    newPackets = []
 
+    getPacketsProtocol(oPackets0)
+
+    tcpTotalDSize = getTotalDataSize(tcpPackets)
+    udpTotalDSize = getTotalDataSize(udpPackets)
+    icmpTotalDSize = getTotalDataSize(icmpPackets)
+
+    tcpThresh = calculateThreshold(currSettings.bandwidth, currSettings.tcpThreshold)
+    udpThresh = calculateThreshold(currSettings.bandwidth, currSettings.udpThreshold)
+    icmpThresh = calculateThreshold(currSettings.bandwidth, currSettings.icmpThreshold)
+
+    if tcpTotalDSize > tcpThresh or udpTotalDSize > udpThresh or icmpTotalDSize > icmpThresh:
+        return oPackets0
+
+    else:
+        return newPackets
 
 
     #Get network bandwidth then get average size of packets per protocol
