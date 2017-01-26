@@ -15,12 +15,13 @@ class packet:
 
 class flow:
 
-    def __init__(self,sourceIP,destIP,protocol,service,srcport,destport,datasize):
+    def __init__(self,sourceIP,destIP,protocol,service,srcport,destport,pktFlag,datasize):
         self.sourceIP = sourceIP
         self.destIP = destIP
         self.protocol = protocol
         self.service = service
         self.srcport = srcport
         self.destport = destport
+        self.pktFlag = pktFlag
         self.datasize = datasize
 

@@ -16,18 +16,30 @@ def filterObtainedPackets(oPackets, device):
 
     #this segment already removes unnecessary ICMP
     while i < max:
-        if oPackets[i].sourceIP == getIPAddress(device):
+        if oPackets[i].sourceIP == str(getIPAddress(device)):
             oPackets.remove(oPackets[i])
+            max = len(oPackets)
+            i = i + 1
 
         #only involved if TCP packet is either HTTP, or if it uses the SYN or SYN-ACK flag. Assigned at packetReceiver
-        elif oPackets[i].protocol == 'TCP' and oPackets[i].service == 'OTHER' and oPackets[i].flag == 'OTHER':
+        elif oPackets[i].protocol == 'TCP' and (oPackets[i].service == 'OTHER' and oPackets[i].flag == 'OTHER'):
             oPackets.remove(oPackets[i])
+            max = len(oPackets)
+            i = i + 1
 
         #only involved if UDP packet is either DNS or DHCP service. Assigned at packetReceiver
         elif oPackets[i].protocol == 'UDP' and oPackets[i].service == 'OTHER':
             oPackets.remove(oPackets[i])
+            max = len(oPackets)
+            i = i + 1
 
-        max = len(oPackets)
-        i = i + 1
+        elif oPackets[i].service == 'OTHER' and (oPackets[i].flag == 'OTHER' or oPackets[i].flag == 'NULL'):
+            oPackets.remove(oPackets[i])
+            max = len(oPackets)
+            i = i + 1
+
+        else:
+            max = len(oPackets)
+            i = i + 1
 
     return oPackets

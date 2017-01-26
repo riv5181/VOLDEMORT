@@ -4,17 +4,17 @@ allFlows = []
 
 def createFlows(flows, packets):
     j = 0
-    maxj = len(flows)
+    maxj = len(packets)
 
     while j < maxj:
         i = 0
-        maxi = len(packets)
+        maxi = len(flows)
         found = False
 
         while i < maxi:
             if flows[i].sourceIP == packets[j].sourceIP and flows[i].destIP == packets[j].destIP:
                 if packets[j].protocol == 'TCP':
-                    if flows[i].pktFlag == packets[j].pktFlag or flows[i].protocol == packets[j].protocol:
+                    if flows[i].pktFlag == packets[j].flag or flows[i].protocol == packets[j].protocol:
                         found = True
                         flows[i].datasize = flows[i].datasize + packets[j].size
                         i = i + 1
@@ -40,20 +40,20 @@ def createFlows(flows, packets):
                 i = i + 1
 
         if found == False or len(flows) == 0:
-            tempFlow = theFlow('', '', '', '', '', '', '')
+            tempFlow = theFlow('', '', '', '', '', '', '', '')
             setattr(tempFlow, 'sourceIP', packets[j].sourceIP)
             setattr(tempFlow, 'destIP', packets[j].destIP)
             setattr(tempFlow, 'protocol', packets[j].protocol)
             setattr(tempFlow, 'service', packets[j].service)
-            setattr(tempFlow, 'srcport', packets[i].srcport)
-            setattr(tempFlow, 'destport', packets[i].destport)
-            setattr(tempFlow, 'datasize', packets[i].size)
-            print("OMGLOL")
+            setattr(tempFlow, 'srcport', packets[j].srcport)
+            setattr(tempFlow, 'destport', packets[j].destport)
+            setattr(tempFlow, 'pktFlag', packets[j].flag)
+            setattr(tempFlow, 'datasize', packets[j].size)
+            print ('LOL')
             flows.append(tempFlow)
 
         j = j + 1
 
-    print(str(len(flows)))
     return flows
 
 def checkOverflow(flow, settings):
