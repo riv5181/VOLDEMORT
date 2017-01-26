@@ -43,7 +43,7 @@ def eth_addr(a):
 # function to parse a packet
 def parse_packet(packet):
     global packets
-    tempPacket = thePacket('','','','','','','','')
+    tempPacket = thePacket('','','','','','','','','','')
     pktFlag = ''
     # parse ethernet header
     eth_length = 14
@@ -133,6 +133,8 @@ def parse_packet(packet):
 
             setattr(tempPacket, 'protocol', 'TCP')
             setattr(tempPacket, 'service', serv)
+            setattr(tempPacket, 'srcport', source_port)
+            setattr(tempPacket, 'destport', dest_port)
             setattr(tempPacket, 'flag', str(pktFlag))
             setattr(tempPacket, 'size', data_size)
             packets.append(tempPacket)
@@ -203,6 +205,8 @@ def parse_packet(packet):
 
             setattr(tempPacket, 'protocol', 'UDP')
             setattr(tempPacket, 'service', serv)
+            setattr(tempPacket, 'srcport', source_port)
+            setattr(tempPacket, 'destport', dest_port)
             setattr(tempPacket, 'flag', 'NULL')
             setattr(tempPacket, 'size', data_size)
             packets.append(tempPacket)

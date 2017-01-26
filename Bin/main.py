@@ -19,7 +19,7 @@ def getPackets():
     packets = Preprocessor.analyzePacketswThresh(packets,StatControl.adminSettings)
 
     if len(packets) > 0:
-        flows = FloodDetection.fDModule(packets)
+        flows = FloodDetection.fDModule(packets, StatControl.adminSettings)
 
 
 def collectPackets():
