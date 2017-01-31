@@ -7,6 +7,7 @@ sPackets = []
 def fDModule(packets, settings):
     global flows2
     sPackets = protCounterSM.segregatePackets(packets)
+
     flows2 = deltaFlowSM.createFlows(flows2, sPackets[0])
     flows2 = deltaFlowSM.createFlows(flows2, sPackets[1])
     flows2 = deltaFlowSM.createFlows(flows2, sPackets[2])
