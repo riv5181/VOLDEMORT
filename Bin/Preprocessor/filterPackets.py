@@ -1,22 +1,46 @@
 import socket, fcntl, struct
 from classes import packet as thePacket
 
-#gets own IP Address
-def getIPAddress(ifname):
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    return socket.inet_ntoa(fcntl.ioctl(
-        s.fileno(),
-        0x8915,  # SIOCGIFADDR
-        struct.pack('256s', ifname[:15])
-    )[20:24])
-
-def filterObtainedPackets(oPackets, device):
+def filterObtainedPackets(oPackets, mainIP):
     i = 0
     max = len(oPackets)
+    newPackets = []
 
     #this segment already removes unnecessary ICMP
     while i < max:
-        if oPackets[i].sourceIP == str(getIPAddress(device)):
+        if oPackets[i].sourceIP != mainIP:
+            if oPackets[i].protocol == 'TCP':
+                if oPackets[i].flag == 'SYN' or oPackets[i].flag == 'SYN-ACK':
+                    newPackets.append(oPackets[i])
+                    i = i + 1
+
+                elif oPackets[i].service == 'HTTP':
+                    newPackets.append(oPackets[i])
+                    i = i + 1
+
+                else:
+                    i = i + 1
+
+            elif oPackets[i].protocol == 'UDP':
+                if oPackets[i].service == 'DNS' or oPackets[i].service == 'DHCP':
+                    newPackets.append(oPackets[i])
+                    i = i + 1
+
+                else:
+                    i = i + 1
+
+            elif oPackets[i].protocol == 'ICMP':
+                newPackets.append(oPackets[i])
+                i = i + 1
+
+            else:
+                i = i + 1
+
+        else:
+            i = i + 1
+
+        '''
+        if oPackets[i].sourceIP == mainIP:
             oPackets.remove(oPackets[i])
             max = len(oPackets)
             i = i + 1
@@ -41,5 +65,6 @@ def filterObtainedPackets(oPackets, device):
         else:
             max = len(oPackets)
             i = i + 1
+        '''
 
-    return oPackets
+    return newPackets

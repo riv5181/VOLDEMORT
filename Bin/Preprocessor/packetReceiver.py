@@ -135,7 +135,7 @@ def parse_packet(packet):
             setattr(tempPacket, 'service', serv)
             setattr(tempPacket, 'srcport', source_port)
             setattr(tempPacket, 'destport', dest_port)
-            setattr(tempPacket, 'flag', str(pktFlag))
+            setattr(tempPacket, 'flag', pktFlag)
             setattr(tempPacket, 'size', data_size)
             packets.append(tempPacket)
 

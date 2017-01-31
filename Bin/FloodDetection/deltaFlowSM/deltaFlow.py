@@ -14,7 +14,7 @@ def createFlows(flows, packets):
         while i < maxi:
             if flows[i].sourceIP == packets[j].sourceIP and flows[i].destIP == packets[j].destIP:
                 if packets[j].protocol == 'TCP':
-                    if flows[i].pktFlag == packets[j].flag or flows[i].protocol == packets[j].protocol:
+                    if flows[i].pktFlag == packets[j].flag or flows[i].service == packets[j].service:
                         found = True
                         flows[i].datasize = flows[i].datasize + packets[j].size
                         i = i + 1
@@ -23,7 +23,7 @@ def createFlows(flows, packets):
                         i = i + 1
 
                 elif packets[j].protocol == 'UDP':
-                    if flows[i].protocol == packets[j].protocol:
+                    if flows[i].service == packets[j].service:
                         found = True
                         flows[i].datasize = flows[i].datasize + packets[j].size
                         i = i + 1

@@ -8,12 +8,23 @@ flows = []
 device1 = StatControl.adminSettings.device
 maxTime1 = StatControl.adminSettings.maxTime
 
+#Get PC's IP
+def getIPAddress(ifname):
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    return socket.inet_ntoa(fcntl.ioctl(
+        s.fileno(),
+        0x8915,  # SIOCGIFADDR
+        struct.pack('256s', ifname[:15])
+    )[20:24])
+
+mainIP = str(getIPAddress(device1))
+
 def getPackets():
     global packets
     packets = Preprocessor.obtainPackets(device1, maxTime1)
 
     print('BEFORE FILTER: ' + str(len(packets)))
-    packets = Preprocessor.filterObtainedPackets(packets, device1)
+    packets = Preprocessor.filterObtainedPackets(packets, mainIP)
     print('AFTER FILTER: ' + str(len(packets)))
 
     packets = Preprocessor.analyzePacketswThresh(packets,StatControl.adminSettings)
@@ -21,12 +32,6 @@ def getPackets():
     if len(packets) > 0:
         flows = FloodDetection.fDModule(packets, StatControl.adminSettings)
 
-
-def collectPackets():
-    while (packets <= 0):
-        print('NO PACKETS YET!')
-
-    print(str(len(packets)))
 
 thread1 = Thread(target = getPackets, args = ())
 #thread2 = Thread(target = collectPackets, args = ())
