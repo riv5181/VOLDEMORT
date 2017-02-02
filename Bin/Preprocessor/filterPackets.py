@@ -1,12 +1,13 @@
 import socket, fcntl, struct
 from classes import packet as thePacket
 
+#Filters obtained packets
 def filterObtainedPackets(oPackets, mainIP):
     i = 0
     max = len(oPackets)
     newPackets = []
 
-    #this segment already removes unnecessary ICMP
+    #Checks the collected packets and removes unnecessary stuff
     while i < max:
         if oPackets[i].sourceIP != mainIP:
             if oPackets[i].protocol == 'TCP':
@@ -29,6 +30,7 @@ def filterObtainedPackets(oPackets, mainIP):
                 else:
                     i = i + 1
 
+            #ICMP only needs ECHO-REPLY, no more further checking needed
             elif oPackets[i].protocol == 'ICMP':
                 newPackets.append(oPackets[i])
                 i = i + 1
@@ -66,5 +68,5 @@ def filterObtainedPackets(oPackets, mainIP):
             max = len(oPackets)
             i = i + 1
         '''
-
+    #Returns a list of packets that is needed for analysis. Only contains protocols needed
     return newPackets

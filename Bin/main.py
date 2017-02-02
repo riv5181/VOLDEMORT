@@ -8,7 +8,7 @@ flows = []
 device1 = StatControl.adminSettings.device
 maxTime1 = StatControl.adminSettings.maxTime
 
-#Get PC's IP
+#Get PC's IP. Takes few second to obtain. Will delay startup of VOLDEMORT. 
 def getIPAddress(ifname):
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     return socket.inet_ntoa(fcntl.ioctl(

@@ -2,6 +2,7 @@ from classes import flow as theFlow
 
 allFlows = []
 
+#Creates flows per given list of packets
 def createFlows(flows, packets):
     j = 0
     maxj = len(packets)
@@ -11,6 +12,7 @@ def createFlows(flows, packets):
         maxi = len(flows)
         found = False
 
+        #analzes each flow if packet info matches flow info. If it does, add data size of packet to flow's size.
         while i < maxi:
             if flows[i].sourceIP == packets[j].sourceIP and flows[i].destIP == packets[j].destIP:
                 if packets[j].protocol == 'TCP':
@@ -39,6 +41,7 @@ def createFlows(flows, packets):
             else:
                 i = i + 1
 
+        #If flow is not found, create new one
         if found == False or len(flows) == 0:
             tempFlow = theFlow('', '', '', '', '', '', '', '')
             setattr(tempFlow, 'sourceIP', packets[j].sourceIP)
@@ -56,6 +59,7 @@ def createFlows(flows, packets):
 
     return flows
 
+#Simplified checker that can be used for IF statements. Just checks if total data size of flow is > than threshold
 def checkOverflow(flow, settings):
     tcpThresh = settings.bandwidth / settings.tcpThreshold
     udpThresh = settings.bandwidth / settings.udpThreshold
@@ -86,6 +90,7 @@ def checkOverflow(flow, settings):
 
     return False
 
+#returns flows that are flooded
 def filterFlows(flows, settings):
     floodedFlows = []
     i = 0

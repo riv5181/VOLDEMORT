@@ -13,6 +13,7 @@ class packet:
         self.flag = flag
         self.size = size
 
+#Assigns the flow class. Contains necessary stuff in a flow to be analyzed.
 class flow:
 
     def __init__(self,sourceIP,destIP,protocol,service,srcport,destport,pktFlag,datasize):

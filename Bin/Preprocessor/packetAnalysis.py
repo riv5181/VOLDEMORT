@@ -31,14 +31,14 @@ def getTotalDataSize(oPackets2):
 
 def calculateThreshold(totalThresh, threshPercentage):
     return 0.01 * (int(totalThresh) * int(threshPercentage))
-
+'''
 def printStatus(captured, threshold1):
     if int(captured) < int(threshold1):
         return 'NORMAL'
 
     else:
         return 'ABNORMAL'
-'''
+
 def analyzePacketswThresh(oPackets0, currSettings):
     global tcpPackets, udpPackets, icmpPackets
 
@@ -91,10 +91,3 @@ def analyzePacketswThresh(oPackets0, currSettings):
 
     #else:
         #return newPackets
-
-
-    #Get network bandwidth then get average size of packets per protocol
-    #Compare it with the bandwidth
-
-    # just print it (For THSNE-2)
-    #should return if protocol/s exceeded threshold??? (For THSNE-3)

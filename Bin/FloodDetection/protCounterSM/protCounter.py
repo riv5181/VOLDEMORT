@@ -1,4 +1,5 @@
 
+#segregates packets. Output is a double array that is organized per protocol (TCP, UDP, ICMP)
 def segregatePackets(packets):
     sortedPackets = []
     tcpPackets = []
