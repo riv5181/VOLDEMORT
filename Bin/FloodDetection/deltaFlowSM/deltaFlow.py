@@ -1,7 +1,5 @@
 from classes import flow as theFlow
 
-allFlows = []
-
 #Creates flows per given list of packets
 def createFlows(flows, packets):
     j = 0
@@ -61,14 +59,14 @@ def createFlows(flows, packets):
 
 #Simplified checker that can be used for IF statements. Just checks if total data size of flow is > than threshold
 def checkOverflow(flow, settings):
-    tcpThresh = settings.bandwidth / settings.tcpThreshold
-    udpThresh = settings.bandwidth / settings.udpThreshold
-    icmpThresh = settings.bandwidth / settings.icmpThreshold
-    tcpsynThresh = tcpThresh / settings.synThresh
-    tcpsynackThresh = tcpThresh / settings.synackThresh
-    tcphttpThresh = tcpThresh / settings.httpGETThresh
-    udpdnsThresh = udpThresh / settings.dnsThresh
-    udpdhcpThesh = udpThresh / settings.dhcpThresh
+    tcpThresh = settings.bandwidth * (settings.tcpThreshold * 0.01)
+    udpThresh = settings.bandwidth * (settings.udpThreshold * 0.01)
+    icmpThresh = settings.bandwidth * (settings.icmpThreshold * 0.01)
+    tcpsynThresh = tcpThresh * (settings.synThresh * 0.01)
+    tcpsynackThresh = tcpThresh * (settings.synackThresh * 0.01)
+    tcphttpThresh = tcpThresh * (settings.httpGETThresh * 0.01)
+    udpdnsThresh = udpThresh * (settings.dnsThresh * 0.01)
+    udpdhcpThesh = udpThresh * (settings.dhcpThresh * 0.01)
 
     if flow.protocol == 'TCP':
         if flow.pktFlag == 'SYN' and flow.datasize > tcpsynThresh:

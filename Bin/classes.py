@@ -26,3 +26,21 @@ class flow:
         self.pktFlag = pktFlag
         self.datasize = datasize
 
+class settings:
+
+    def __init__(self,maxTime,device,tcpThreshold,udpThreshold,icmpThreshold,synThresh,synackThresh,httpGETThresh,
+                 httpPOSTThresh,dnsThresh,dhcpThresh,bandwidth,cycle_time):
+        self.maxTime = maxTime
+        self.device = device
+        self.tcpThreshold = tcpThreshold
+        self.udpThreshold = udpThreshold
+        self.icmpThreshold = icmpThreshold
+        self.synThresh = synThresh
+        self.synackThresh = synackThresh
+        self.httpGETThresh = httpGETThresh
+        self.httpPOSTThresh = httpPOSTThresh
+        self.dnsThresh = dnsThresh
+        self.dhcpThresh = dhcpThresh
+        self.bandwidth = bandwidth
+        self.cycle_time = cycle_time
+

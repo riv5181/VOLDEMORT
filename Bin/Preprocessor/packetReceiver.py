@@ -3,12 +3,12 @@ from struct import *
 from classes import packet as thePacket
 
 packets = []
-finalpackets = []
-startTime = time.time()
-currentTime = 0
 
 def obtainPackets(device, maxTime):
-    global startTime, currentTime, packets
+    global packets
+    packets = []
+    startTime = time.time()
+    currentTime = 0
 
     '''
     open device

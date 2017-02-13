@@ -74,7 +74,9 @@ def analyzePacketswThresh(oPackets0, currSettings):
 '''
 def analyzePacketswThresh(oPackets0, currSettings):
     global tcpPackets, udpPackets, icmpPackets
-    newPackets = []
+    tcpPackets = []
+    udpPackets = []
+    icmpPackets = []
 
     getPacketsProtocol(oPackets0)
 
@@ -86,8 +88,8 @@ def analyzePacketswThresh(oPackets0, currSettings):
     udpThresh = calculateThreshold(currSettings.bandwidth, currSettings.udpThreshold)
     icmpThresh = calculateThreshold(currSettings.bandwidth, currSettings.icmpThreshold)
 
-    #if tcpTotalDSize > tcpThresh or udpTotalDSize > udpThresh or icmpTotalDSize > icmpThresh:
-    return oPackets0
+    if tcpTotalDSize > tcpThresh or udpTotalDSize > udpThresh or icmpTotalDSize > icmpThresh:
+        return True
 
-    #else:
-        #return newPackets
+    else:
+        return False
