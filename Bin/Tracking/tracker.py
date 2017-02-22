@@ -84,7 +84,7 @@ def tracker(flows, settings, timeStart, timeEnd, db, cur):
     if checkFloodingExist(flows): cycle_noFlood = 0
     else: cycle_noFlood = cycle_noFlood + 1
 
-    if cycle_count >= settings.cycle_time or cycle_count >= settings.cycle_time:
+    if cycle_count >= settings.cycle_time or cycle_noFlood >= settings.cycle_time:
         cycle_count = 0
         data.append(tcpsyn)  # data[0]
         data.append(tcpsynack)  # data[1]
