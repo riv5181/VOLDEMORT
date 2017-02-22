@@ -1,6 +1,7 @@
 class adminSettings:
     maxTime = 10 # measured in seconds
     device = 'ens33' # network port that will be used
+    network = '192.168.0.0/24' # network that will not be used for analysis (your own network)
     tcpThreshold = 50 # percentage with other thresholds; total with other thresholds should be 100
     udpThreshold = 30 # percentage with other thresholds; total with other thresholds should be 100
     icmpThreshold = 20 # percentage with other thresholds; total with other thresholds should be 100

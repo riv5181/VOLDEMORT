@@ -16,7 +16,7 @@ class packet:
 #Assigns the flow class. Contains necessary stuff in a flow to be analyzed.
 class flow:
 
-    def __init__(self,sourceIP,destIP,protocol,service,srcport,destport,pktFlag,datasize):
+    def __init__(self,sourceIP,destIP,protocol,service,srcport,destport,pktFlag,datasize,isFlood):
         self.sourceIP = sourceIP
         self.destIP = destIP
         self.protocol = protocol
@@ -25,13 +25,15 @@ class flow:
         self.destport = destport
         self.pktFlag = pktFlag
         self.datasize = datasize
+        self.isFlood = isFlood
 
 class settings:
-
-    def __init__(self,maxTime,device,tcpThreshold,udpThreshold,icmpThreshold,synThresh,synackThresh,httpGETThresh,
-                 httpPOSTThresh,dnsThresh,dhcpThresh,bandwidth,cycle_time):
+#mysql -u user -p < voldemortdb.sql
+    def __init__(self,maxTime,device,network,tcpThreshold,udpThreshold,icmpThreshold,synThresh,synackThresh,
+                 httpGETThresh,httpPOSTThresh,dnsThresh,dhcpThresh,bandwidth,cycle_time):
         self.maxTime = maxTime
         self.device = device
+        self.network = network
         self.tcpThreshold = tcpThreshold
         self.udpThreshold = udpThreshold
         self.icmpThreshold = icmpThreshold

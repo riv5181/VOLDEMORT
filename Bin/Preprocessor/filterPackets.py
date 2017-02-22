@@ -1,15 +1,16 @@
 import socket, fcntl, struct
+from netaddr import IPNetwork, IPAddress
 from classes import packet as thePacket
 
 #Filters obtained packets
-def filterObtainedPackets(oPackets, mainIP):
+def filterObtainedPackets(oPackets, mainIP, network):
     i = 0
     max = len(oPackets)
     newPackets = []
 
     #Checks the collected packets and removes unnecessary stuff
     while i < max:
-        if oPackets[i].sourceIP != mainIP:
+        if oPackets[i].sourceIP != mainIP or IPAddress(oPackets[i].sourceIP) not in IPNetwork(network):
             if oPackets[i].protocol == 'TCP':
                 if oPackets[i].flag == 'SYN' or oPackets[i].flag == 'SYN-ACK':
                     newPackets.append(oPackets[i])

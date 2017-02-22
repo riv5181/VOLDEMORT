@@ -52,11 +52,13 @@ def fDModule(packets, settings):
     print('FLOODED FLOWS: ')
     print('-------')
     while i < maxi:
-        print(floodedFlows[i].protocol)
-        print(floodedFlows[i].service + " " + floodedFlows[i].pktFlag)
-        print(floodedFlows[i].sourceIP + "->" + floodedFlows[i].destIP)
-        print(floodedFlows[i].datasize)
-        print(" ")
+        if floodedFlows[i].isFlood == True:
+            print(floodedFlows[i].protocol)
+            print(floodedFlows[i].service + " " + floodedFlows[i].pktFlag)
+            print(floodedFlows[i].sourceIP + "->" + floodedFlows[i].destIP)
+            print(floodedFlows[i].datasize)
+            print(" ")
+
         i = i + 1
 
     return floodedFlows

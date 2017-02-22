@@ -41,7 +41,7 @@ def createFlows(flows, packets):
 
         #If flow is not found, create new one
         if found == False or len(flows) == 0:
-            tempFlow = theFlow('', '', '', '', '', '', '', '')
+            tempFlow = theFlow('', '', '', '', '', '', '', '','')
             setattr(tempFlow, 'sourceIP', packets[j].sourceIP)
             setattr(tempFlow, 'destIP', packets[j].destIP)
             setattr(tempFlow, 'protocol', packets[j].protocol)
@@ -50,6 +50,7 @@ def createFlows(flows, packets):
             setattr(tempFlow, 'destport', packets[j].destport)
             setattr(tempFlow, 'pktFlag', packets[j].flag)
             setattr(tempFlow, 'datasize', packets[j].size)
+            setattr(tempFlow, 'isFlood', False)
             print ('LOL')
             flows.append(tempFlow)
 
@@ -90,14 +91,16 @@ def checkOverflow(flow, settings):
 
 #returns flows that are flooded
 def filterFlows(flows, settings):
-    floodedFlows = []
     i = 0
     maxi = len(flows)
 
     while i < maxi:
         if checkOverflow(flows[i], settings):
-            floodedFlows.append(flows[i])
+            flows[i].isFlood = True
+
+        else:
+            flows[i].isFlood = False
 
         i = i + 1
     
-    return floodedFlows
+    return flows
