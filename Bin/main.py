@@ -12,6 +12,7 @@ maxTime1 = currSettings.maxTime
 network = currSettings.network
 timeStart = ''
 timeEnd = ''
+floodEvent = False
 
 #Connector to logging database
 db = MySQLdb.connect(host="localhost", port=3306, user="root", passwd="p@ssword",db="voldemortdb")
@@ -28,67 +29,44 @@ def getIPAddress(ifname):
 
 mainIP = str(getIPAddress(device1))
 
-def getPackets():
-    global packets, flows, currSettings, timeStart, timeEnd
+try:
+    while True:
+        timeStart = strftime("%m-%d-%Y %H:%M:%S", gmtime())
+        packets = Preprocessor.obtainPackets(device1, maxTime1)
+        timeEnd = strftime("%m-%d-%Y %H:%M:%S", gmtime())
 
-    try:
-        while True:
-            timeStart = strftime("%m-%d-%Y %H:%M:%S", gmtime())
-            packets = Preprocessor.obtainPackets(device1, maxTime1)
+        print('BEFORE FILTER: ' + str(len(packets)))
+        packets = Preprocessor.filterObtainedPackets(packets, mainIP, network)
+        print('AFTER FILTER: ' + str(len(packets)))
 
-            print('BEFORE FILTER: ' + str(len(packets)))
-            packets = Preprocessor.filterObtainedPackets(packets, mainIP, network)
-            print('AFTER FILTER: ' + str(len(packets)))
+        ifFlood = Preprocessor.analyzePacketswThresh(packets,currSettings)
+        floodEvent = Preprocessor.getFloodingEvent()
 
-            ifFlood = Preprocessor.analyzePacketswThresh(packets,currSettings)
+        if ifFlood or floodEvent:
+            Tracking.setFloodingNoExist(False)
+            flows = FloodDetection.fDModule(packets, currSettings)
+            data = Tracking.tracker(flows, currSettings, timeStart, timeEnd, db, cur)
 
-            if ifFlood:
-                timeEnd = strftime("%m-%d-%Y %H:%M:%S", gmtime())
-                flows = FloodDetection.fDModule(packets, currSettings)
-                data = Tracking.tracker(flows, currSettings, timeStart, timeEnd, db, cur)
+            if data == None:
+                timeStart = ''
+                timeEnd = ''
+                packets = []
                 flows = []
-
-                if data == 'NULL':
-                    timeStart = ''
-                    timeEnd = ''
-                    packets = []
-
-                else:
-                    print (len(data[5]))
-                    #currSettings = StatControl.updateThreshold(data,currSettings)
-                    break
 
             else:
-                flows = FloodDetection.fDModule(packets, currSettings)
-                data = Tracking.tracker(flows, currSettings, timeStart, timeEnd, db, cur)
-                flows = []
+                print (len(data[5]))
+                #currSettings = StatControl.updateThreshold(data,currSettings)
+                if Tracking.getFloodingNoExist(): Preprocessor.setFloodingEvent(False)
+                raw_input("Press Enter to continue...")
 
-                if data == 'NULL':
-                    timeStart = ''
-                    timeEnd = ''
-                    packets = []
+        else:
+            packets = []
+            flows = []
+            timeStart = ''
+            timeEnd = ''
 
-                else:
-                    print(len(data[5]))
-                    # currSettings = StatControl.updateThreshold(data,currSettings)
-                    break
-
-    except KeyboardInterrupt:
-        print('QUIT!')
-
-
-
-thread1 = Thread(target = getPackets, args = ())
-#thread2 = Thread(target = collectPackets, args = ())
-
-thread1.start()
-#thread2.start()
-
-thread1.join()
-#thread2.join()
+except KeyboardInterrupt:
+    print('QUIT!')
 
 db.close()
 print (timeStart + " " + timeEnd)
-
-#if __name__ == "__main__":
-#    main(sys.argv)

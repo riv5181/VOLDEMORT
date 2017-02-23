@@ -2,12 +2,20 @@
 
 cycle_count = 0
 cycle_noFlood = 0
+noMoreFlood = False
 tcpsyn = []
 tcpsynack = []
 tcphttp = []
 udpdns = []
 udpdhcp = []
 icmp = []
+
+def getFloodingNoExist():
+    return noMoreFlood
+
+def setFloodingNoExist(event):
+    global noMoreFlood
+    noMoreFlood = event
 
 def checkDataSize(flows, service):
     totalData = 0
@@ -49,11 +57,12 @@ def checkFloodingExist(flows):
     return False
 
 def tracker(flows, settings, timeStart, timeEnd, db, cur):
-    global cycle_count, cycle_noFlood, tcpsyn, tcpsynack, tcphttp, udpdns, udpdhcp, icmp
+    global cycle_count, cycle_noFlood, tcpsyn, tcpsynack, tcphttp, udpdns, udpdhcp, icmp, noMoreFlood
     data = []
 
     if checkFloodingExist(flows):
         #Insert code to put flows to logging module
+        noMoreFlood = False
         '''
         cur.execute("INSERT INTO cycle (date_start,time_start,date_end,time_end) VALUES (%s, %s, %s, %s)",
                     (timeStart[0:10],timeStart[11:19],timeEnd[0:10],timeEnd[11:19]))
@@ -84,8 +93,11 @@ def tracker(flows, settings, timeStart, timeEnd, db, cur):
     if checkFloodingExist(flows): cycle_noFlood = 0
     else: cycle_noFlood = cycle_noFlood + 1
 
+    if cycle_noFlood >= settings.cycle_time: noMoreFlood = True
+
     if cycle_count >= settings.cycle_time or cycle_noFlood >= settings.cycle_time:
         cycle_count = 0
+        cycle_noFlood = 0
         data.append(tcpsyn)  # data[0]
         data.append(tcpsynack)  # data[1]
         data.append(tcphttp)  # data[2]
@@ -102,4 +114,4 @@ def tracker(flows, settings, timeStart, timeEnd, db, cur):
 
         return data
 
-    return 'NULL'
+    return None

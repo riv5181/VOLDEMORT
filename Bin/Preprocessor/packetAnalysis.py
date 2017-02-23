@@ -3,6 +3,14 @@ import sys, socket
 tcpPackets = []
 udpPackets = []
 icmpPackets = []
+floodEvent = False
+
+def getFloodingEvent():
+    return floodEvent
+
+def setFloodingEvent(event):
+    global floodEvent
+    floodEvent = event
 
 def getPacketsProtocol(oPackets1):
     global tcpPackets, udpPackets, icmpPackets
@@ -31,49 +39,9 @@ def getTotalDataSize(oPackets2):
 
 def calculateThreshold(totalThresh, threshPercentage):
     return 0.01 * (int(totalThresh) * int(threshPercentage))
-'''
-def printStatus(captured, threshold1):
-    if int(captured) < int(threshold1):
-        return 'NORMAL'
-
-    else:
-        return 'ABNORMAL'
 
 def analyzePacketswThresh(oPackets0, currSettings):
-    global tcpPackets, udpPackets, icmpPackets
-
-    getPacketsProtocol(oPackets0)
-
-    tcpTotalDSize = getTotalDataSize(tcpPackets)
-    udpTotalDSize = getTotalDataSize(udpPackets)
-    icmpTotalDSize = getTotalDataSize(icmpPackets)
-
-    tcpThresh = calculateThreshold(currSettings.bandwidth, currSettings.tcpThreshold)
-    udpThresh = calculateThreshold(currSettings.bandwidth, currSettings.udpThreshold)
-    icmpThresh = calculateThreshold(currSettings.bandwidth, currSettings.icmpThreshold)
-
-    print ('BANDWIDTH: ' + str(currSettings.bandwidth) + ' bytes')
-    print
-    print ('----- TCP INFORMATION-----')
-    print ('THRESHOLD: ' + str(tcpThresh) + ' bytes, (' + str(currSettings.tcpThreshold) + '% of bandwidth)')
-    print ('PACKETS CAPTURED: ' + str(len(tcpPackets)))
-    print ('TOTAL CAPTURED TCP SIZE: ' + str(tcpTotalDSize) + ' bytes')
-    print ('STATUS: ' + str(printStatus(tcpTotalDSize,tcpThresh)))
-    print
-    print('----- UDP INFORMATION-----')
-    print('THRESHOLD: ' + str(udpThresh) + ', bytes (' + str(currSettings.udpThreshold) + '% of bandwidth)')
-    print('PACKETS CAPTURED: ' + str(len(udpPackets)))
-    print('TOTAL CAPTURED UDP SIZE: ' + str(udpTotalDSize) + ' bytes')
-    print('STATUS: ' + str(printStatus(udpTotalDSize, udpThresh)))
-    print
-    print('----- ICMP INFORMATION-----')
-    print('THRESHOLD: ' + str(icmpThresh) + ', bytes (' + str(currSettings.icmpThreshold) + '% of bandwidth)')
-    print('PACKETS CAPTURED: ' + str(len(icmpPackets)))
-    print('TOTAL CAPTURED ICMP SIZE: ' + str(icmpTotalDSize) + ' bytes')
-    print('STATUS: ' + str(printStatus(icmpTotalDSize, icmpThresh)))
-'''
-def analyzePacketswThresh(oPackets0, currSettings):
-    global tcpPackets, udpPackets, icmpPackets
+    global tcpPackets, udpPackets, icmpPackets, floodEvent
     tcpPackets = []
     udpPackets = []
     icmpPackets = []
@@ -89,6 +57,7 @@ def analyzePacketswThresh(oPackets0, currSettings):
     icmpThresh = calculateThreshold(currSettings.bandwidth, currSettings.icmpThreshold)
 
     if tcpTotalDSize > tcpThresh or udpTotalDSize > udpThresh or icmpTotalDSize > icmpThresh:
+        floodEvent = True
         return True
 
     else:
