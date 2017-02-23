@@ -27,10 +27,11 @@ class flow:
         self.datasize = datasize
         self.isFlood = isFlood
 
+#Assigns the new settings class. Will contain the new thresholds that will be used
 class settings:
-#mysql -u user -p < voldemortdb.sql
+
     def __init__(self,maxTime,device,network,tcpThreshold,udpThreshold,icmpThreshold,synThresh,synackThresh,
-                 httpGETThresh,httpPOSTThresh,dnsThresh,dhcpThresh,bandwidth,cycle_time):
+                 httpThresh,dnsThresh,dhcpThresh,bandwidth,cycle_time):
         self.maxTime = maxTime
         self.device = device
         self.network = network
@@ -39,8 +40,7 @@ class settings:
         self.icmpThreshold = icmpThreshold
         self.synThresh = synThresh
         self.synackThresh = synackThresh
-        self.httpGETThresh = httpGETThresh
-        self.httpPOSTThresh = httpPOSTThresh
+        self.httpThresh = httpThresh
         self.dnsThresh = dnsThresh
         self.dhcpThresh = dhcpThresh
         self.bandwidth = bandwidth

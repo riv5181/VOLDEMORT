@@ -7,6 +7,7 @@ packets = []
 flows = []
 data = []
 currSettings = StatControl.adminSettings
+adminSettings = StatControl.adminSettings
 device1 = currSettings.device
 maxTime1 = currSettings.maxTime
 network = currSettings.network
@@ -38,6 +39,7 @@ try:
         print('BEFORE FILTER: ' + str(len(packets)))
         packets = Preprocessor.filterObtainedPackets(packets, mainIP, network)
         print('AFTER FILTER: ' + str(len(packets)))
+        print(' ')
 
         ifFlood = Preprocessor.analyzePacketswThresh(packets,currSettings)
         floodEvent = Preprocessor.getFloodingEvent()
@@ -54,8 +56,34 @@ try:
                 flows = []
 
             else:
-                print (len(data[5]))
-                #currSettings = StatControl.updateThreshold(data,currSettings)
+                print('-----OLD THRESHOLDS-----')
+                print('TCP: ' + str(currSettings.tcpThreshold))
+                print('TCP SYN: ' + str(currSettings.synThresh))
+                print('TCP SYN-ACK: ' + str(currSettings.synackThresh))
+                print('TCP HTTP: ' + str(currSettings.httpThresh))
+                print(' ')
+                print('UDP: ' + str(currSettings.udpThreshold))
+                print('UDP DNS: ' + str(currSettings.dnsThresh))
+                print('UDP DHCP: ' + str(currSettings.dhcpThresh))
+                print(' ')
+                print('ICMP: ' + str(currSettings.icmpThreshold))
+                print(' ')
+
+                currSettings = StatControl.updateThreshold(data,adminSettings)
+
+                print('-----NEW THRESHOLDS-----')
+                print('TCP: ' + str(currSettings.tcpThreshold))
+                print('TCP SYN: ' + str(currSettings.synThresh))
+                print('TCP SYN-ACK: ' + str(currSettings.synackThresh))
+                print('TCP HTTP: ' + str(currSettings.httpThresh))
+                print(' ')
+                print('UDP: ' + str(currSettings.udpThreshold))
+                print('UDP DNS: ' + str(currSettings.dnsThresh))
+                print('UDP DHCP: ' + str(currSettings.dhcpThresh))
+                print(' ')
+                print('ICMP: ' + str(currSettings.icmpThreshold))
+                print(' ')
+
                 if Tracking.getFloodingNoExist(): Preprocessor.setFloodingEvent(False)
                 raw_input("Press Enter to continue...")
 

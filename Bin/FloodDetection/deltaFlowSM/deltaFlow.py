@@ -51,7 +51,6 @@ def createFlows(flows, packets):
             setattr(tempFlow, 'pktFlag', packets[j].flag)
             setattr(tempFlow, 'datasize', packets[j].size)
             setattr(tempFlow, 'isFlood', False)
-            print ('LOL')
             flows.append(tempFlow)
 
         j = j + 1
@@ -65,7 +64,7 @@ def checkOverflow(flow, settings):
     icmpThresh = settings.bandwidth * (settings.icmpThreshold * 0.01)
     tcpsynThresh = tcpThresh * (settings.synThresh * 0.01)
     tcpsynackThresh = tcpThresh * (settings.synackThresh * 0.01)
-    tcphttpThresh = tcpThresh * (settings.httpGETThresh * 0.01)
+    tcphttpThresh = tcpThresh * (settings.httpThresh * 0.01)
     udpdnsThresh = udpThresh * (settings.dnsThresh * 0.01)
     udpdhcpThesh = udpThresh * (settings.dhcpThresh * 0.01)
 

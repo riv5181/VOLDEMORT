@@ -8,9 +8,8 @@ class adminSettings:
     icmpThreshold = 20 # percentage with other thresholds; total with other thresholds should be 100
     synThresh = 25 # percentage with other services under TCP; total with other TCP services should be 100
     synackThresh = 25 # percentage with other services under TCP; total with other TCP services should be 100
-    httpGETThresh = 25 # percentage with other services under TCP; total with other TCP services should be 100
-    httpPOSThresh = 25 # percentage with other services under TCP; total with other TCP services should be 100
+    httpThresh = 50 # percentage with other services under TCP; total with other TCP services should be 100
     dnsThresh = 50 # percentage with other services under UDP; total with other UDP services should be 100
     dhcpThresh = 50 # percentage with other services under UDP; total with other UDP services should be 100
-    bandwidth = 1000 #Bandwidth of the network. Measured in bytes. Use router interface bandwidth.
+    bandwidth = 2000 #Bandwidth of the network. Measured in bytes. Use router interface bandwidth.
     cycle_time = 3

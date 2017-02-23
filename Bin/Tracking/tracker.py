@@ -9,6 +9,8 @@ tcphttp = []
 udpdns = []
 udpdhcp = []
 icmp = []
+tcp = []
+udp = []
 
 def getFloodingNoExist():
     return noMoreFlood
@@ -23,7 +25,7 @@ def checkDataSize(flows, service):
     i = 0
 
     while i < max:
-        if flows[i].protocol == 'TCP':
+        if flows[i].protocol == 'TCP' and flows[i].isFlood == True:
             if flows[i].pktFlag == service or flows[i].service == service:
                 totalData = totalData + int(flows[i].datasize)
                 i = i + 1
@@ -31,7 +33,7 @@ def checkDataSize(flows, service):
             else:
                 i = i + 1
 
-        elif flows[i].protocol == 'UDP' or flows[i].protocol == 'ICMP':
+        elif (flows[i].protocol == 'UDP' or flows[i].protocol == 'ICMP') and flows[i].isFlood == True:
             if flows[i].service == service:
                 totalData = totalData + int(flows[i].datasize)
                 i = i + 1
@@ -41,6 +43,19 @@ def checkDataSize(flows, service):
 
         else:
             i = i + 1
+
+    return totalData
+
+def checkDataSizeSimplified(flows, protocol):
+    totalData = 0
+    max = len(flows)
+    i = 0
+
+    while i < max:
+        if flows[i].protocol == protocol and flows[i].isFlood == True:
+            totalData = totalData + int(flows[i].datasize)
+
+        i = i + 1
 
     return totalData
 
@@ -56,8 +71,11 @@ def checkFloodingExist(flows):
 
     return False
 
+def calculateThreshold(totalThresh, threshPercentage):
+    return 0.01 * (int(totalThresh) * int(threshPercentage))
+
 def tracker(flows, settings, timeStart, timeEnd, db, cur):
-    global cycle_count, cycle_noFlood, tcpsyn, tcpsynack, tcphttp, udpdns, udpdhcp, icmp, noMoreFlood
+    global cycle_count, cycle_noFlood, tcpsyn, tcpsynack, tcphttp, udpdns, udpdhcp, icmp, tcp, udp, noMoreFlood
     data = []
 
     if checkFloodingExist(flows):
@@ -82,12 +100,17 @@ def tracker(flows, settings, timeStart, timeEnd, db, cur):
             i = i + 1
         #'''
 
-    tcpsyn.append((checkDataSize(flows, 'SYN') / settings.bandwidth) * 100)
-    tcpsynack.append((checkDataSize(flows, 'SYN-ACK') / settings.bandwidth) * 100)
-    tcphttp.append((checkDataSize(flows, 'HTTP') / settings.bandwidth) * 100)
-    udpdns.append((checkDataSize(flows, 'DNS') / settings.bandwidth) * 100)
-    udpdhcp.append((checkDataSize(flows, 'DHCP') / settings.bandwidth) * 100)
-    icmp.append((checkDataSize(flows, 'ECHO-REPLY') / settings.bandwidth) * 100)
+    tcpThresh = calculateThreshold(settings.bandwidth, settings.tcpThreshold)
+    udpThresh = calculateThreshold(settings.bandwidth, settings.udpThreshold)
+
+    tcpsyn.append((float(checkDataSize(flows, 'SYN')) / tcpThresh) * 100)
+    tcpsynack.append((float(checkDataSize(flows, 'SYN-ACK')) / tcpThresh) * 100)
+    tcphttp.append((float(checkDataSize(flows, 'HTTP')) / tcpThresh) * 100)
+    udpdns.append((float(checkDataSize(flows, 'DNS')) / udpThresh) * 100)
+    udpdhcp.append((float(checkDataSize(flows, 'DHCP'))/ udpThresh) * 100)
+    icmp.append((float(checkDataSizeSimplified(flows, 'ICMP')) / settings.bandwidth) * 100)
+    tcp.append((float(checkDataSizeSimplified(flows, 'TCP')) / settings.bandwidth) * 100)
+    udp.append((float(checkDataSizeSimplified(flows, 'UDP')) / settings.bandwidth) * 100)
     cycle_count = cycle_count + 1
 
     if checkFloodingExist(flows): cycle_noFlood = 0
@@ -104,6 +127,8 @@ def tracker(flows, settings, timeStart, timeEnd, db, cur):
         data.append(udpdns)  # data[3]
         data.append(udpdhcp)  # data[4]
         data.append(icmp)  # data[5]
+        data.append(tcp) # data[6]
+        data.append(udp) # data[7]git
 
         tcpsyn = []
         tcpsynack = []
@@ -111,6 +136,8 @@ def tracker(flows, settings, timeStart, timeEnd, db, cur):
         udpdns = []
         udpdhcp = []
         icmp = []
+        tcp = []
+        udp = []
 
         return data
 

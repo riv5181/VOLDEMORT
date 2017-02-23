@@ -1,2 +1,2 @@
 from configuration import adminSettings
-from pht import updateThreshold
+from ThreshGen import updateThreshold

@@ -1,5 +1,6 @@
 import MySQLdb
 
+#ONE MUST DO THIS FIRST: mysql -u user -p < voldemortdb.sql
 db = MySQLdb.connect(host="localhost", port=3306, user="root", passwd="p@ssword", db="voldemortdb")
 
 cur = db.cursor()
