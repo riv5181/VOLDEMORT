@@ -10,7 +10,7 @@ def filterObtainedPackets(oPackets, mainIP, network):
 
     #Checks the collected packets and removes unnecessary stuff
     while i < max:
-        if oPackets[i].sourceIP != mainIP and IPAddress(oPackets[i].sourceIP) not in IPNetwork(network):
+        if oPackets[i].sourceIP != mainIP: #and IPAddress(oPackets[i].sourceIP) not in IPNetwork(network):
             if oPackets[i].protocol == 'TCP':
                 if oPackets[i].flag == 'SYN' or oPackets[i].flag == 'SYN-ACK':
                     newPackets.append(oPackets[i])

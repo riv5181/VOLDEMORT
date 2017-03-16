@@ -1,4 +1,4 @@
-import sys, socket, fcntl, struct, MySQLdb, Preprocessor, StatControl, FloodDetection, Tracking
+import sys, socket, fcntl, struct, MySQLdb, Preprocessor, StatControl, FloodDetection, Tracking, Logging
 from time import gmtime, strftime
 from threading import Thread
 from classes import packet as thePacket
@@ -47,45 +47,71 @@ try:
         if ifFlood or floodEvent:
             Tracking.setFloodingNoExist(False)
             flows = FloodDetection.fDModule(packets, currSettings)
-            data = Tracking.tracker(flows, currSettings, timeStart, timeEnd, db, cur)
 
-            if data == None:
-                timeStart = ''
-                timeEnd = ''
-                packets = []
-                flows = []
+            if len(flows) > currSettings.maxFlows:
+                Preprocessor.setFloodingEvent(False)
+                '''
+                cur.execute("INSERT INTO cycle (date_start,time_start,date_end,time_end) VALUES (%s, %s, %s, %s)",
+                            (timeStart[0:10],timeStart[11:19],timeEnd[0:10],timeEnd[11:19]))
+                db.commit()
+                cur.execute("SELECT MAX(idcycle) FROM cycle")
+                obtainedcurID = cur.fetchall()
+                curID = int(obtainedcurID[0][0])
+                i = 0
+                max = len(flows)
+                while i < max:
+                    if flows[i].isFlood == True:
+                        cur.execute("INSERT INTO flow (idcycle,src_ip,dest_ip,protocol,service,packetflg,datasize) "
+                                    "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",(curID,flows[i].sourceIP,flows[i].destIP,
+                                    flows[i].protocol,flows[i].service,flows[i].pktFlag,flows[i].datasize, 0))
+                        db.commit()
+
+                    i = i + 1
+                Logging.createReport(currSettings,db,cur,"dist")
+                #'''
 
             else:
-                print('-----OLD THRESHOLDS-----')
-                print('TCP: ' + str(currSettings.tcpThreshold))
-                print('TCP SYN: ' + str(currSettings.synThresh))
-                print('TCP SYN-ACK: ' + str(currSettings.synackThresh))
-                print('TCP HTTP: ' + str(currSettings.httpThresh))
-                print(' ')
-                print('UDP: ' + str(currSettings.udpThreshold))
-                print('UDP DNS: ' + str(currSettings.dnsThresh))
-                print('UDP DHCP: ' + str(currSettings.dhcpThresh))
-                print(' ')
-                print('ICMP: ' + str(currSettings.icmpThreshold))
-                print(' ')
+                data = Tracking.tracker(flows, currSettings, timeStart, timeEnd, db, cur)
 
-                currSettings = StatControl.updateThreshold(data,adminSettings)
+                if data == None:
+                    timeStart = ''
+                    timeEnd = ''
+                    packets = []
+                    flows = []
 
-                print('-----NEW THRESHOLDS-----')
-                print('TCP: ' + str(currSettings.tcpThreshold))
-                print('TCP SYN: ' + str(currSettings.synThresh))
-                print('TCP SYN-ACK: ' + str(currSettings.synackThresh))
-                print('TCP HTTP: ' + str(currSettings.httpThresh))
-                print(' ')
-                print('UDP: ' + str(currSettings.udpThreshold))
-                print('UDP DNS: ' + str(currSettings.dnsThresh))
-                print('UDP DHCP: ' + str(currSettings.dhcpThresh))
-                print(' ')
-                print('ICMP: ' + str(currSettings.icmpThreshold))
-                print(' ')
+                else:
+                    print('-----OLD THRESHOLDS-----')
+                    print('TCP: ' + str(currSettings.tcpThreshold))
+                    print('TCP SYN: ' + str(currSettings.synThresh))
+                    print('TCP SYN-ACK: ' + str(currSettings.synackThresh))
+                    print('TCP HTTP: ' + str(currSettings.httpThresh))
+                    print(' ')
+                    print('UDP: ' + str(currSettings.udpThreshold))
+                    print('UDP DNS: ' + str(currSettings.dnsThresh))
+                    print('UDP DHCP: ' + str(currSettings.dhcpThresh))
+                    print(' ')
+                    print('ICMP: ' + str(currSettings.icmpThreshold))
+                    print(' ')
 
-                if Tracking.getFloodingNoExist(): Preprocessor.setFloodingEvent(False)
-                raw_input("Press Enter to continue...")
+                    currSettings = StatControl.updateThreshold(data,adminSettings)
+
+                    print('-----NEW THRESHOLDS-----')
+                    print('TCP: ' + str(currSettings.tcpThreshold))
+                    print('TCP SYN: ' + str(currSettings.synThresh))
+                    print('TCP SYN-ACK: ' + str(currSettings.synackThresh))
+                    print('TCP HTTP: ' + str(currSettings.httpThresh))
+                    print(' ')
+                    print('UDP: ' + str(currSettings.udpThreshold))
+                    print('UDP DNS: ' + str(currSettings.dnsThresh))
+                    print('UDP DHCP: ' + str(currSettings.dhcpThresh))
+                    print(' ')
+                    print('ICMP: ' + str(currSettings.icmpThreshold))
+                    print(' ')
+
+                    if Tracking.getFloodingNoExist():
+                        Preprocessor.setFloodingEvent(False)
+
+                    raw_input("Press Enter to continue...")
 
         else:
             packets = []

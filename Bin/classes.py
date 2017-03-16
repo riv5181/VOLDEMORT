@@ -30,11 +30,12 @@ class flow:
 #Assigns the new settings class. Will contain the new thresholds that will be used
 class settings:
 
-    def __init__(self,maxTime,device,network,tcpThreshold,udpThreshold,icmpThreshold,synThresh,synackThresh,
+    def __init__(self,maxTime,device,network,maxFlows,tcpThreshold,udpThreshold,icmpThreshold,synThresh,synackThresh,
                  httpThresh,dnsThresh,dhcpThresh,bandwidth,cycle_time):
         self.maxTime = maxTime
         self.device = device
         self.network = network
+        self.maxFlows = maxFlows
         self.tcpThreshold = tcpThreshold
         self.udpThreshold = udpThreshold
         self.icmpThreshold = icmpThreshold

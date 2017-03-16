@@ -2,6 +2,7 @@ class adminSettings:
     maxTime = 10 # measured in seconds
     device = 'ens33' # network port that will be used
     network = '192.168.0.0/24' # network that will not be used for analysis (your own network)
+    maxFlows = 50 # Number of expected flows to enter system. If exceeded, event is considered DDoS
     #Note: Thresholds manually configured will be set as the minimum threshold (new one will never go below given value)
     tcpThreshold = 50 # percentage with other thresholds; total with other thresholds should be 100
     udpThreshold = 30 # percentage with other thresholds; total with other thresholds should be 100
