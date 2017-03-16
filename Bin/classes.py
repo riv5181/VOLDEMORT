@@ -31,7 +31,7 @@ class flow:
 class settings:
 
     def __init__(self,maxTime,device,network,maxFlows,tcpThreshold,udpThreshold,icmpThreshold,synThresh,synackThresh,
-                 httpThresh,dnsThresh,dhcpThresh,bandwidth,cycle_time):
+                 httpThresh,dnsThresh,dhcpThresh,tcplimit,udplimit,icmplimit,bandwidth,cycle_time):
         self.maxTime = maxTime
         self.device = device
         self.network = network
@@ -44,6 +44,9 @@ class settings:
         self.httpThresh = httpThresh
         self.dnsThresh = dnsThresh
         self.dhcpThresh = dhcpThresh
+        self.tcplimit = tcplimit
+        self.udplimit = udplimit
+        self.icmplimit = icmplimit
         self.bandwidth = bandwidth
         self.cycle_time = cycle_time
 

@@ -12,25 +12,6 @@ def updateCurrentThreshold(list):
     return (ave)
 
 
-def getLowest(list):
-    return min(float(s) for s in list)
-
-
-def setPriority(list, IndexOfData):
-    priorityList = [0, 0, 0]
-    if (IndexOfData == 0):
-        priorityList[0] = 0
-        priorityList[1] = 2
-        priorityList[2] = 1
-    elif (IndexOfData == 1):
-        priorityList[0] = 2
-        priorityList[1] = 0
-        priorityList[2] = 1
-    if (IndexOfData == 2):
-        priorityList[0] = 2
-        priorityList[1] = 1
-        priorityList[2] = 0
-
 
 def getNeededBW(list, Value, IndexOfData):  # Value is the caculated data needed
     return Value - list[IndexOfData]
@@ -189,9 +170,9 @@ OriginalList = ThresholdList
 while (True):
     currData = []
 
-    TCPList = [random.uniform(1, 100), random.uniform(1, 100), random.uniform(1, 100)];
-    UDPList = [random.uniform(1, 10), random.uniform(1, 10), random.uniform(1, 100)];
-    ICMPList = [random.uniform(1, 10), random.uniform(1, 10), random.uniform(1, 10)];
+    TCPList = [0, 0, 0];
+    UDPList = [0, 0, 0];
+    ICMPList = [random.uniform(1, 10), random.uniform(1, 100), random.uniform(1, 100)];
     currData.append(updateCurrentThreshold(TCPList))
     currData.append(updateCurrentThreshold(UDPList))
     currData.append(updateCurrentThreshold(ICMPList))

@@ -1,28 +1,191 @@
 from classes import settings as Settings
 import sys
-import random
-import time
 
-def decideNewThresh(new, old):
-    if int(new) > int(old):
-        return int(new)
+ThresholdList = []  # this list is the thresholds
+LimitList = []  # these are the lower limits
+OriginalList = []  # un edited List
+MasterHitList = []  # this is the tracker for each protocol
+qwe = []
+asd = []
+zxc = []
+MasterHitList.append(qwe)
+MasterHitList.append(asd)
+MasterHitList.append(zxc)
 
-    else:
-        return int(old)
+BooleanList = []
+a_BList = [0, 0, 0]
+b_BList = [0, 0, 0]
+c_BList = [0, 0, 0]
+BooleanList.append(a_BList)
+BooleanList.append(b_BList)
+BooleanList.append(c_BList)
+currData = []
+OriginalList = ThresholdList
+
+def intializeValues():
+    global ThresholdList, LimitList, OriginalList, MasterHitList, BooleanList, currData, OriginalList
+    ThresholdList = []  # this list is the thresholds
+    LimitList = []  # these are the lower limits
+    OriginalList = []  # un edited List
+    MasterHitList = []  # this is the tracker for each protocol
+    qwe = []
+    asd = []
+    zxc = []
+    MasterHitList.append(qwe)
+    MasterHitList.append(asd)
+    MasterHitList.append(zxc)
+
+    BooleanList = []
+    a_BList = [0, 0, 0]
+    b_BList = [0, 0, 0]
+    c_BList = [0, 0, 0]
+    BooleanList.append(a_BList)
+    BooleanList.append(b_BList)
+    BooleanList.append(c_BList)
+    currData = []
+    OriginalList = ThresholdList
 
 def pht(list):
     sum = 0
-
     for numbers in list:
         sum += numbers
-
     ave = sum / (len(list))
-
     return (ave)
 
+
+def getNeededBW(list, Value, IndexOfData):  # Value is the caculated data needed
+    return Value - list[IndexOfData]
+
+
+def getNeededBW2(list, Value, IndexOfData):  # Value is the caculated data needed
+    return list[IndexOfData] - Value
+
+
+def getFloodingAdjustment(list, IndexOfdata, NeededBW, Original):  # Adjusts The Value of The BW
+    if (IndexOfdata == 0):
+        if (list[2] - NeededBW >= LimitList[2]):
+            ThresholdList[0] += NeededBW
+            ThresholdList[2] -= NeededBW
+
+        elif (list[1] - NeededBW >= LimitList[1]):
+            ThresholdList[0] += NeededBW
+            ThresholdList[1] -= NeededBW
+
+        else:
+            print("No More bw Available 1")
+
+    elif (IndexOfdata == 1):
+        if (list[2] - NeededBW >= LimitList[2]):
+            ThresholdList[1] += NeededBW
+            ThresholdList[2] -= NeededBW
+
+        elif (list[0] - NeededBW >= LimitList[0]):
+            ThresholdList[1] += NeededBW
+            ThresholdList[0] -= NeededBW
+
+        else:
+            print("No More bw Available 2")
+
+    elif (IndexOfdata == 2):
+        if (list[1] - NeededBW >= LimitList[1]):
+            ThresholdList[2] += NeededBW
+            ThresholdList[1] -= NeededBW
+
+        elif (list[0] - NeededBW >= LimitList[0]):
+            ThresholdList[2] += NeededBW
+            ThresholdList[0] -= NeededBW
+
+        else:
+            print("No More bw Available 3")
+
+def getBackAdjustment(list, IndexOfdata, NeededBW, Original):  # Adjusts The Value of The BW
+    if (IndexOfdata == 0):
+        if (list[1] < Original[1]):
+            ThresholdList[2] += NeededBW
+            ThresholdList[0] -= NeededBW
+
+        elif (list[2] < Original[2]):
+            ThresholdList[2] += NeededBW
+            ThresholdList[0] -= NeededBW
+
+    elif (IndexOfdata == 1):
+        if (list[0] < Original[0]):
+            ThresholdList[0] += NeededBW
+            ThresholdList[1] -= NeededBW
+
+        elif (list[2] < Original[2]):
+            ThresholdList[2] += NeededBW
+            ThresholdList[1] -= NeededBW
+
+    elif (IndexOfdata == 2):
+        if (list[0] < Original[0]):
+            ThresholdList[0] += NeededBW
+            ThresholdList[2] -= NeededBW
+
+        elif (list[1] < Original[1]):
+            ThresholdList[1] += NeededBW
+            ThresholdList[2] -= NeededBW
+
+
+def CalculateThreshold(ThresholdList, LimitList, MasterHitList, BooleanList, IndexOfData, currData):
+    if (currData[IndexOfData] > ThresholdList[IndexOfData]):
+
+        if (BooleanList[IndexOfData][0] == 1 or BooleanList[IndexOfData][2] == 0):
+            MasterHitList[IndexOfData].append(currData[IndexOfData])
+            BooleanList[IndexOfData][2] += 1
+
+        elif (BooleanList[IndexOfData][0] == 0 and BooleanList[IndexOfData][2] >= 1):
+            MasterHitList[IndexOfData] = []
+            BooleanList[IndexOfData][2] = 1
+            MasterHitList[IndexOfData].append(currData[IndexOfData])
+
+        else:
+            BooleanList[IndexOfData][2] = 0
+            MasterHitList[IndexOfData] = []
+
+        BooleanList[IndexOfData][0] = 1
+        BooleanList[IndexOfData][1] = 0
+
+    elif (currData[IndexOfData] < ThresholdList[IndexOfData]):
+        if (BooleanList[IndexOfData][1] == 1 or BooleanList[IndexOfData][2] == 0):
+            MasterHitList[IndexOfData].append(currData[IndexOfData])
+            BooleanList[IndexOfData][2] += 1
+
+        elif (BooleanList[IndexOfData][1] == 0 and BooleanList[IndexOfData][2] >= 1):
+            MasterHitList[IndexOfData] = []
+            BooleanList[IndexOfData][2] = 1
+            MasterHitList[IndexOfData].append(currData[IndexOfData])
+
+        else:
+            BooleanList[IndexOfData][2] = 0
+            MasterHitList[IndexOfData] = []
+
+        BooleanList[IndexOfData][0] = 0
+        BooleanList[IndexOfData][1] = 1
+
+    if (BooleanList[IndexOfData][0] == 1):
+        NeededBW = getNeededBW(ThresholdList, pht(MasterHitList[IndexOfData]), IndexOfData)
+        getFloodingAdjustment(ThresholdList, IndexOfData, NeededBW, OriginalList)
+        MasterHitList[IndexOfData] = []
+        BooleanList[IndexOfData][2] = 0
+
+    elif (BooleanList[IndexOfData][1] == 1):
+        NeededBW = getNeededBW2(ThresholdList, pht(MasterHitList[IndexOfData]), IndexOfData)
+        getBackAdjustment(ThresholdList, IndexOfData, NeededBW, OriginalList)
+        MasterHitList[IndexOfData] = []
+        BooleanList[IndexOfData][2] = 0
+
 def updateThreshold(data, adminSettings):
-    newSettings = Settings('','','','','','','','','','','','','','')
-    newThresholds = []
+    newSettings = Settings('','','','','','','','','','','','','','','','','')
+
+    intializeValues()
+
+    ThresholdList.append(int(adminSettings.tcpThreshold))
+    ThresholdList.append(int(adminSettings.udpThreshold))
+    ThresholdList.append(int(adminSettings.icmpThreshold))
+    LimitList.append(int(adminSettings.tcplimit))
+    LimitList.append(int(adminSettings.udplimit))
+    LimitList.append(int(adminSettings.icmplimit))
 
     setattr(newSettings, 'maxTime', adminSettings.maxTime)
     setattr(newSettings, 'device', adminSettings.device)
@@ -30,24 +193,22 @@ def updateThreshold(data, adminSettings):
     setattr(newSettings, 'bandwidth', adminSettings.bandwidth)
     setattr(newSettings, 'cycle_time', adminSettings.cycle_time)
     setattr(newSettings, 'maxFlows', adminSettings.maxFlows)
+    setattr(newSettings, 'tcplimit', adminSettings.tcplimit)
+    setattr(newSettings, 'udplimit', adminSettings.udplimit)
+    setattr(newSettings, 'icmplimit', adminSettings.icmplimit)
 
     # Take note of assigned IDs: 0 = TCP; 1 = UDP; 2 = ICMP
-    i = 0
-    maxData = len(data)
-    while i < maxData:
-        newThresholds.append(pht(data[i]))
-        i = i + 1
+    currData.append(pht(data[0]))
+    currData.append(pht(data[1]))
+    currData.append(pht(data[2]))
 
-    setattr(newSettings, 'tcpThreshold', decideNewThresh(newThresholds[0], adminSettings.icmpThreshold))
-    setattr(newSettings, 'udpThreshold', decideNewThresh(newThresholds[1], adminSettings.tcpThreshold))
-    setattr(newSettings, 'icmpThreshold', decideNewThresh(newThresholds[2], adminSettings.udpThreshold))
-    '''
-    setattr(newSettings, 'synThresh', decideNewThresh(newThresholds[0], adminSettings.synThresh))
-    setattr(newSettings, 'synackThresh', decideNewThresh(newThresholds[1], adminSettings.synackThresh))
-    setattr(newSettings, 'httpThresh', decideNewThresh(newThresholds[2], adminSettings.httpThresh))
-    setattr(newSettings, 'dnsThresh', decideNewThresh(newThresholds[3], adminSettings.dnsThresh))
-    setattr(newSettings, 'dhcpThresh', decideNewThresh(newThresholds[4], adminSettings.dhcpThresh))
-    '''
+    for x in range(0, 3):
+        CalculateThreshold(ThresholdList, LimitList, MasterHitList, BooleanList, x, currData)
+
+    setattr(newSettings, 'tcpThreshold', float("%.2f" % ThresholdList[0]))
+    setattr(newSettings, 'udpThreshold', float("%.2f" % ThresholdList[1]))
+    setattr(newSettings, 'icmpThreshold', float("%.2f" % ThresholdList[2]))
+
     setattr(newSettings, 'synThresh', adminSettings.synThresh)
     setattr(newSettings, 'synackThresh', adminSettings.synackThresh)
     setattr(newSettings, 'httpThresh', adminSettings.httpThresh)
