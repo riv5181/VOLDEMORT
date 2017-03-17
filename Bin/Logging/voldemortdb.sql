@@ -86,27 +86,16 @@ DROP TABLE IF EXISTS `threshold`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `threshold` (
   `idthresh` int(11) NOT NULL AUTO_INCREMENT,
-  `idcycle_start` int(11) NOT NULL,
-  `idcycle_end` int(11) NOT NULL,
-  `old_tcp` int(11) NOT NULL,
-  `old_http` int(11) NOT NULL,
-  `old_syn` int(11) NOT NULL,
-  `old_syn-ack` int(11) NOT NULL,
-  `old_udp` int(11) NOT NULL,
-  `old_dhcp` int(11) NOT NULL,
-  `old_dns` int(11) NOT NULL,
-  `old_icmp` int(11) NOT NULL,
-  `new_tcp` int(11) NOT NULL,
-  `new_http` int(11) NOT NULL,
-  `new_syn` int(11) NOT NULL,
-  `new_synack` int(11) NOT NULL,
-  `new_udp` int(11) NOT NULL,
-  `new_dhcp` int(11) NOT NULL,
-  `new_dns` int(11) NOT NULL,
-  `new_icmp` int(11) NOT NULL,
+  `idcycle` int(11) NOT NULL,
+  `old_tcp` float NOT NULL,
+  `old_udp` float NOT NULL,
+  `old_icmp` float NOT NULL,
+  `new_tcp` float NOT NULL,
+  `new_udp` float NOT NULL,
+  `new_icmp` float NOT NULL,
   PRIMARY KEY (`idthresh`),
   UNIQUE KEY `idthresh_UNIQUE` (`idthresh`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -115,6 +104,7 @@ CREATE TABLE `threshold` (
 
 LOCK TABLES `threshold` WRITE;
 /*!40000 ALTER TABLE `threshold` DISABLE KEYS */;
+INSERT INTO `threshold` VALUES (1,2,50,20,30,60,20,20);
 /*!40000 ALTER TABLE `threshold` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -127,4 +117,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-03-09 18:26:56
+-- Dump completed on 2017-03-17 13:53:42

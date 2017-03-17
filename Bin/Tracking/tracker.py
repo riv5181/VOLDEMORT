@@ -1,4 +1,3 @@
-import Logging
 
 cycle_count = 0
 cycle_noFlood = 0
@@ -39,14 +38,14 @@ def checkFloodingExist(flows):
 
     return False
 
-def tracker(flows, settings, timeStart, timeEnd, db, cur, recorded):
+def tracker(flows, settings, timeStart, timeEnd, db, cur):
     global cycle_count, cycle_noFlood, icmp, tcp, udp, noMoreFlood#,tcpsyn, tcpsynack, tcphttp, udpdns, udpdhcp
     data = []
 
     if checkFloodingExist(flows):
         #Insert code to put flows to logging module
         noMoreFlood = False
-        '''
+        #'''
         cur.execute("INSERT INTO cycle (date_start,time_start,date_end,time_end) VALUES (%s, %s, %s, %s)",
                     (timeStart[0:10],timeStart[11:19],timeEnd[0:10],timeEnd[11:19]))
         db.commit()
@@ -61,15 +60,13 @@ def tracker(flows, settings, timeStart, timeEnd, db, cur, recorded):
                             "VALUES (%s, %s, %s, %s, %s, %s, %s,%s)",(curID,flows[i].sourceIP,flows[i].destIP,
                             flows[i].protocol,flows[i].service,flows[i].pktFlag,flows[i].datasize, 1))
                 db.commit()
-
             i = i + 1
-        Logging.createReport(settings,db,cur,recorded[0],recorded[1],recorded[2],recorded[3])
         #'''
 
     if len(flows) > settings.maxFlows:
         # Insert code to put flows to logging module
         noMoreFlood = False
-        '''
+        #'''
         cur.execute("INSERT INTO cycle (date_start,time_start,date_end,time_end) VALUES (%s, %s, %s, %s)",
                     (timeStart[0:10],timeStart[11:19],timeEnd[0:10],timeEnd[11:19]))
         db.commit()
@@ -84,9 +81,7 @@ def tracker(flows, settings, timeStart, timeEnd, db, cur, recorded):
                             "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",(curID,flows[i].sourceIP,flows[i].destIP,
                             flows[i].protocol,flows[i].service,flows[i].pktFlag,flows[i].datasize, 0))
                 db.commit()
-
             i = i + 1
-        Logging.createReport(settings,db,cur,recorded[0],recorded[1],recorded[2],recorded[3])
         #'''
 
     tcp.append((float(checkDataSizeSimplified(flows, 'TCP')) / settings.bandwidth) * 100)

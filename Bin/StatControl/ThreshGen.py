@@ -175,7 +175,7 @@ def CalculateThreshold(ThresholdList, LimitList, MasterHitList, BooleanList, Ind
         MasterHitList[IndexOfData] = []
         BooleanList[IndexOfData][2] = 0
 
-def updateThreshold(data, adminSettings):
+def updateThreshold(data, adminSettings, db, cur):
     newSettings = Settings('','','','','','','','','','','','','','','','','')
 
     intializeValues()
@@ -208,6 +208,15 @@ def updateThreshold(data, adminSettings):
     setattr(newSettings, 'tcpThreshold', float("%.2f" % ThresholdList[0]))
     setattr(newSettings, 'udpThreshold', float("%.2f" % ThresholdList[1]))
     setattr(newSettings, 'icmpThreshold', float("%.2f" % ThresholdList[2]))
+
+    cur.execute("SELECT MAX(idcycle) FROM cycle")
+    obtainedcurID = cur.fetchall()
+    curID = int(obtainedcurID[0][0])
+
+    cur.execute("INSERT INTO threshold VALUES (%s, %s, %s, %s, %s, %s, %s)", (curID,adminSettings.tcpThreshold,
+                adminSettings.udpThreshold,adminSettings.icmpThreshold,float("%.2f" % ThresholdList[0]),
+                float("%.2f" % ThresholdList[1]),float("%.2f" % ThresholdList[2])))
+    db.commit()
 
     setattr(newSettings, 'synThresh', adminSettings.synThresh)
     setattr(newSettings, 'synackThresh', adminSettings.synackThresh)

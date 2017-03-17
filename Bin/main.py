@@ -1,4 +1,4 @@
-import sys, socket, fcntl, struct, MySQLdb, Preprocessor, StatControl, FloodDetection, Tracking
+import sys, socket, fcntl, struct, MySQLdb, Preprocessor, StatControl, FloodDetection, Tracking, Logging
 from time import gmtime, strftime
 from threading import Thread
 from classes import packet as thePacket
@@ -8,7 +8,6 @@ flows = []
 data = []
 recorded = []
 currSettings = StatControl.adminSettings
-adminSettings = StatControl.adminSettings
 device1 = currSettings.device
 maxTime1 = currSettings.maxTime
 network = currSettings.network
@@ -53,13 +52,13 @@ try:
             recorded.append(FloodDetection.getFlowBefore())
             recorded.append(FloodDetection.getNumFloods())
             data = Tracking.tracker(flows, currSettings, timeStart, timeEnd, db, cur, recorded)
-            recorded = []
 
             if data == None:
                 timeStart = ''
                 timeEnd = ''
                 packets = []
                 flows = []
+                recorded = []
 
             else:
                 print('-----OLD THRESHOLDS-----')
@@ -70,7 +69,8 @@ try:
                 print('ICMP: ' + str(currSettings.icmpThreshold))
                 print(' ')
 
-                currSettings = StatControl.updateThreshold(data,adminSettings)
+                currSettings = StatControl.updateThreshold(data,currSettings, db, cur)
+                Logging.createReport(currSettings, db, cur, recorded[0], recorded[1], recorded[2], recorded[3])
 
                 print('-----NEW THRESHOLDS-----')
                 print('TCP: ' + str(currSettings.tcpThreshold))
@@ -83,6 +83,7 @@ try:
                 if Tracking.getFloodingNoExist():
                     Preprocessor.setFloodingEvent(False)
 
+                recorded = []
                 raw_input("Press Enter to continue...")
 
         else:
