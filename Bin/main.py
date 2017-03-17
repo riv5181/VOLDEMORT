@@ -64,13 +64,8 @@ try:
             else:
                 print('-----OLD THRESHOLDS-----')
                 print('TCP: ' + str(currSettings.tcpThreshold))
-                print('TCP SYN: ' + str(currSettings.synThresh))
-                print('TCP SYN-ACK: ' + str(currSettings.synackThresh))
-                print('TCP HTTP: ' + str(currSettings.httpThresh))
                 print(' ')
                 print('UDP: ' + str(currSettings.udpThreshold))
-                print('UDP DNS: ' + str(currSettings.dnsThresh))
-                print('UDP DHCP: ' + str(currSettings.dhcpThresh))
                 print(' ')
                 print('ICMP: ' + str(currSettings.icmpThreshold))
                 print(' ')
@@ -79,20 +74,14 @@ try:
 
                 print('-----NEW THRESHOLDS-----')
                 print('TCP: ' + str(currSettings.tcpThreshold))
-                print('TCP SYN: ' + str(currSettings.synThresh))
-                print('TCP SYN-ACK: ' + str(currSettings.synackThresh))
-                print('TCP HTTP: ' + str(currSettings.httpThresh))
                 print(' ')
                 print('UDP: ' + str(currSettings.udpThreshold))
-                print('UDP DNS: ' + str(currSettings.dnsThresh))
-                print('UDP DHCP: ' + str(currSettings.dhcpThresh))
                 print(' ')
                 print('ICMP: ' + str(currSettings.icmpThreshold))
                 print(' ')
 
                 if Tracking.getFloodingNoExist():
                     Preprocessor.setFloodingEvent(False)
-                    #Logging.createReport(currSettings, db, cur)
 
                 raw_input("Press Enter to continue...")
 
