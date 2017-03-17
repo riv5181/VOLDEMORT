@@ -1,4 +1,4 @@
-#import Logging
+import Logging
 
 cycle_count = 0
 cycle_noFlood = 0
@@ -39,7 +39,7 @@ def checkFloodingExist(flows):
 
     return False
 
-def tracker(flows, settings, timeStart, timeEnd, db, cur):
+def tracker(flows, settings, timeStart, timeEnd, db, cur, recorded):
     global cycle_count, cycle_noFlood, icmp, tcp, udp, noMoreFlood#,tcpsyn, tcpsynack, tcphttp, udpdns, udpdhcp
     data = []
 
@@ -63,6 +63,7 @@ def tracker(flows, settings, timeStart, timeEnd, db, cur):
                 db.commit()
 
             i = i + 1
+        Logging.createReport(settings,db,cur,recorded[0],recorded[1],recorded[2],recorded[3])
         #'''
 
     if len(flows) > settings.maxFlows:
@@ -85,6 +86,7 @@ def tracker(flows, settings, timeStart, timeEnd, db, cur):
                 db.commit()
 
             i = i + 1
+        Logging.createReport(settings,db,cur,recorded[0],recorded[1],recorded[2],recorded[3])
         #'''
 
     tcp.append((float(checkDataSizeSimplified(flows, 'TCP')) / settings.bandwidth) * 100)

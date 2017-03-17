@@ -1,6 +1,6 @@
 from time import gmtime, strftime
 
-def createReport(currSettings,db, cur, dist):
+def createReport(currSettings,db, cur, numPackets, numAfter, numFlows, withFlood):
     location = "/home/voldemort/Desktop/IMPLEMENTATION/Bin/Tracking/Logging/logs/"
     fileName = str(strftime("%m-%d-%Y %H:%M:%S", gmtime()))
 
@@ -15,10 +15,10 @@ def createReport(currSettings,db, cur, dist):
     report.write("Time Ended: ")
     report.write(" ")
     report.write("===== STATISTICS =====")
-    report.write("Nummber of packets obtained: ")
-    report.write("Number of packets after filtering: ")
-    report.write("Flows detected: ")
-    report.write("Flows with flooding: ")
+    report.write("Nummber of packets obtained: " + numPackets)
+    report.write("Number of packets after filtering: " + numAfter)
+    report.write("Flows detected: " + numFlows)
+    report.write("Flows with flooding: " + withFlood)
     report.write(" ")
     report.write("===== THRESHOLD VALUES =====") #Service (Percentage) Threshold WILL ALWAYS stay the same, but it
     report.write("Old TCP value: ")              #doesn't mean it won't be logged. It adjusts based on prot threshold.

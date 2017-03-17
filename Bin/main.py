@@ -1,4 +1,4 @@
-import sys, socket, fcntl, struct, MySQLdb, Preprocessor, StatControl, FloodDetection, Tracking, Logging
+import sys, socket, fcntl, struct, MySQLdb, Preprocessor, StatControl, FloodDetection, Tracking
 from time import gmtime, strftime
 from threading import Thread
 from classes import packet as thePacket
@@ -6,6 +6,7 @@ from classes import packet as thePacket
 packets = []
 flows = []
 data = []
+recorded = []
 currSettings = StatControl.adminSettings
 adminSettings = StatControl.adminSettings
 device1 = currSettings.device
@@ -38,7 +39,9 @@ try:
 
         print('BEFORE FILTER: ' + str(len(packets)))
         packets = Preprocessor.filterObtainedPackets(packets, mainIP, network)
+        recorded.append(len(packets))
         print('AFTER FILTER: ' + str(len(packets)))
+        recorded.append(len(packets))
         print(' ')
 
         ifFlood = Preprocessor.analyzePacketswThresh(packets,currSettings)
@@ -47,7 +50,10 @@ try:
         if ifFlood or floodEvent:
             Tracking.setFloodingNoExist(False)
             flows = FloodDetection.fDModule(packets, currSettings)
-            data = Tracking.tracker(flows, currSettings, timeStart, timeEnd, db, cur)
+            recorded.append(FloodDetection.getFlowBefore())
+            recorded.append(FloodDetection.getNumFloods())
+            data = Tracking.tracker(flows, currSettings, timeStart, timeEnd, db, cur, recorded)
+            recorded = []
 
             if data == None:
                 timeStart = ''
@@ -95,9 +101,9 @@ try:
             flows = []
             timeStart = ''
             timeEnd = ''
+            recorded = []
 
 except KeyboardInterrupt:
     print('QUIT!')
 
 db.close()
-print (timeStart + " " + timeEnd)

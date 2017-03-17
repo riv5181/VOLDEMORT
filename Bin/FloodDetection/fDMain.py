@@ -3,11 +3,19 @@ import protCounterSM, deltaFlowSM
 flows2 = []
 floodedFlows = []
 sPackets = []
+numFlood = 0
+
+def getFlowBefore():
+    return len(flows2)
+
+def getNumFloods():
+    return numFlood
 
 def fDModule(packets, settings):
-    global flows2, floodedFlows, sPackets
+    global flows2, floodedFlows, sPackets, numFlood
     floodedFlows = []
     flows2 = []
+    numFlood = 0
     sPackets = protCounterSM.segregatePackets(packets)
 
     #This segment searches for the priority protocol (Highest Threshold). It will be analyzed first for flows.
@@ -58,6 +66,7 @@ def fDModule(packets, settings):
             print(floodedFlows[i].sourceIP + "->" + floodedFlows[i].destIP)
             print(floodedFlows[i].datasize)
             print(" ")
+            numFlood = numFlood + 1
 
         i = i + 1
 
