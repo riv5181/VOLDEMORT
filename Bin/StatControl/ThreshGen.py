@@ -213,9 +213,10 @@ def updateThreshold(data, adminSettings, db, cur):
     obtainedcurID = cur.fetchall()
     curID = int(obtainedcurID[0][0])
 
-    cur.execute("INSERT INTO threshold VALUES (%s, %s, %s, %s, %s, %s, %s)", (curID,adminSettings.tcpThreshold,
-                adminSettings.udpThreshold,adminSettings.icmpThreshold,float("%.2f" % ThresholdList[0]),
-                float("%.2f" % ThresholdList[1]),float("%.2f" % ThresholdList[2])))
+    cur.execute("INSERT INTO threshold (idcycle,old_tcp,old_udp,old_icmp,new_tcp,new_udp,new_icmp) "
+                "VALUES (%s, %s, %s, %s, %s, %s, %s)", (curID,adminSettings.tcpThreshold,adminSettings.udpThreshold,
+                adminSettings.icmpThreshold,float("%.2f" % ThresholdList[0]),float("%.2f" % ThresholdList[1]),
+                float("%.2f" % ThresholdList[2])))
     db.commit()
 
     setattr(newSettings, 'synThresh', adminSettings.synThresh)

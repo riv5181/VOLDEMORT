@@ -56,8 +56,8 @@ def tracker(flows, settings, timeStart, timeEnd, db, cur):
         max = len(flows)
         while i < max:
             if flows[i].isFlood == True:
-                cur.execute("INSERT INTO flow (idcycle,src_ip,dest_ip,protocol,service,packetflg,datasize) "
-                            "VALUES (%s, %s, %s, %s, %s, %s, %s,%s)",(curID,flows[i].sourceIP,flows[i].destIP,
+                cur.execute("INSERT INTO flow (idcycle,src_ip,dest_ip,protocol,service,packetflg,datasize,status) "
+                            "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",(curID,flows[i].sourceIP,flows[i].destIP,
                             flows[i].protocol,flows[i].service,flows[i].pktFlag,flows[i].datasize, 1))
                 db.commit()
             i = i + 1
@@ -77,7 +77,7 @@ def tracker(flows, settings, timeStart, timeEnd, db, cur):
         max = len(flows)
         while i < max:
             if flows[i].isFlood == True:
-                cur.execute("INSERT INTO flow (idcycle,src_ip,dest_ip,protocol,service,packetflg,datasize) "
+                cur.execute("INSERT INTO flow (idcycle,src_ip,dest_ip,protocol,service,packetflg,datasize,status) "
                             "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",(curID,flows[i].sourceIP,flows[i].destIP,
                             flows[i].protocol,flows[i].service,flows[i].pktFlag,flows[i].datasize, 0))
                 db.commit()

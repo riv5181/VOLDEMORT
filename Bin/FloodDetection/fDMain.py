@@ -4,15 +4,16 @@ flows2 = []
 floodedFlows = []
 sPackets = []
 numFlood = 0
+flowBefore = 0
 
 def getFlowBefore():
-    return len(flows2)
+    return flowBefore
 
 def getNumFloods():
     return numFlood
 
 def fDModule(packets, settings):
-    global flows2, floodedFlows, sPackets, numFlood
+    global flows2, floodedFlows, sPackets, numFlood, flowBefore
     floodedFlows = []
     flows2 = []
     numFlood = 0
@@ -41,6 +42,7 @@ def fDModule(packets, settings):
             flows2 = deltaFlowSM.createFlows(flows2, sPackets[1])
 
     maxi = len(flows2)
+    flowBefore = maxi
     i = 0
 
     while i < maxi:

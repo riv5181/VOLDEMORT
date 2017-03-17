@@ -1,0 +1,21 @@
+FLOODED: ICMP ECHO-REPLY 
+===== CYCLE INFORMATION ======
+Date Started: 03-17-2017 
+Time Started: 07:57:23 
+Date Ended: 03-17-2017 
+Time Ended: 07:57:34 
+===== STATISTICS =====
+Nummber of packets obtained: 45
+Number of packets after filtering: 10
+Flows detected: 1
+Flows with flooding: 1
+===== THRESHOLD VALUES =====
+Old TCP value: 60.0 
+Old UDP value: 25.0 
+Old ICMP value: 15.0 
+New TCP value: 60.0 
+New UDP value: 21.87 
+New ICMP value: 18.13 
+===== SUSPICION COUNT =====
+IP Address: 172.217.25.4
+Count: 1

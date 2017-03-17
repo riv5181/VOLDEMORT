@@ -6,7 +6,6 @@ from classes import packet as thePacket
 packets = []
 flows = []
 data = []
-recorded = []
 currSettings = StatControl.adminSettings
 device1 = currSettings.device
 maxTime1 = currSettings.maxTime
@@ -37,10 +36,10 @@ try:
         timeEnd = strftime("%m-%d-%Y %H:%M:%S", gmtime())
 
         print('BEFORE FILTER: ' + str(len(packets)))
+        blah1 = len(packets)
         packets = Preprocessor.filterObtainedPackets(packets, mainIP, network)
-        recorded.append(len(packets))
         print('AFTER FILTER: ' + str(len(packets)))
-        recorded.append(len(packets))
+        blah2 = len(packets)
         print(' ')
 
         ifFlood = Preprocessor.analyzePacketswThresh(packets,currSettings)
@@ -49,16 +48,15 @@ try:
         if ifFlood or floodEvent:
             Tracking.setFloodingNoExist(False)
             flows = FloodDetection.fDModule(packets, currSettings)
-            recorded.append(FloodDetection.getFlowBefore())
-            recorded.append(FloodDetection.getNumFloods())
-            data = Tracking.tracker(flows, currSettings, timeStart, timeEnd, db, cur, recorded)
+            blah3 = FloodDetection.getFlowBefore()
+            blah4 = FloodDetection.getNumFloods()
+            data = Tracking.tracker(flows, currSettings, timeStart, timeEnd, db, cur)
 
             if data == None:
                 timeStart = ''
                 timeEnd = ''
                 packets = []
                 flows = []
-                recorded = []
 
             else:
                 print('-----OLD THRESHOLDS-----')
@@ -70,7 +68,6 @@ try:
                 print(' ')
 
                 currSettings = StatControl.updateThreshold(data,currSettings, db, cur)
-                Logging.createReport(currSettings, db, cur, recorded[0], recorded[1], recorded[2], recorded[3])
 
                 print('-----NEW THRESHOLDS-----')
                 print('TCP: ' + str(currSettings.tcpThreshold))
@@ -83,8 +80,7 @@ try:
                 if Tracking.getFloodingNoExist():
                     Preprocessor.setFloodingEvent(False)
 
-                recorded = []
-                raw_input("Press Enter to continue...")
+            Logging.createReport(currSettings, db, cur, blah1, blah2, blah3, blah4)
 
         else:
             packets = []
