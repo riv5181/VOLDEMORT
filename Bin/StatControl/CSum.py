@@ -170,9 +170,9 @@ OriginalList = ThresholdList
 while (True):
     currData = []
 
-    TCPList = [0, 0, 0];
-    UDPList = [0, 0, 0];
-    ICMPList = [75, 75, 80];
+    TCPList = [random.uniform(1, 100), random.uniform(1, 100), random.uniform(1, 100)];
+    UDPList = [random.uniform(1, 100), random.uniform(1, 100), random.uniform(1, 100)];
+    ICMPList = [random.uniform(1, 100), random.uniform(1, 100), random.uniform(1, 100)];
     currData.append(updateCurrentThreshold(TCPList))
     currData.append(updateCurrentThreshold(UDPList))
     currData.append(updateCurrentThreshold(ICMPList))

@@ -80,6 +80,8 @@ try:
                 if Tracking.getFloodingNoExist():
                     Preprocessor.setFloodingEvent(False)
 
+                #raw_input("Press Enter to Continue")
+
             Logging.createReport(currSettings, db, cur, blah1, blah2, blah3, blah4)
 
         else:

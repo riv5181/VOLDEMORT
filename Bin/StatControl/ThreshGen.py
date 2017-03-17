@@ -62,6 +62,7 @@ def getNeededBW2(list, Value, IndexOfData):  # Value is the caculated data neede
 
 
 def getFloodingAdjustment(list, IndexOfdata, NeededBW, Original):  # Adjusts The Value of The BW
+    global ThresholdList
     if (IndexOfdata == 0):
         if (list[2] - NeededBW >= LimitList[2]):
             ThresholdList[0] += NeededBW
@@ -99,6 +100,7 @@ def getFloodingAdjustment(list, IndexOfdata, NeededBW, Original):  # Adjusts The
             print("No More bw Available 3")
 
 def getBackAdjustment(list, IndexOfdata, NeededBW, Original):  # Adjusts The Value of The BW
+    global ThresholdList
     if (IndexOfdata == 0):
         if (list[1] < Original[1]):
             ThresholdList[2] += NeededBW
@@ -126,59 +128,12 @@ def getBackAdjustment(list, IndexOfdata, NeededBW, Original):  # Adjusts The Val
             ThresholdList[1] += NeededBW
             ThresholdList[2] -= NeededBW
 
-
-def CalculateThreshold(ThresholdList, LimitList, MasterHitList, BooleanList, IndexOfData, currData):
-    if (currData[IndexOfData] > ThresholdList[IndexOfData]):
-
-        if (BooleanList[IndexOfData][0] == 1 or BooleanList[IndexOfData][2] == 0):
-            MasterHitList[IndexOfData].append(currData[IndexOfData])
-            BooleanList[IndexOfData][2] += 1
-
-        elif (BooleanList[IndexOfData][0] == 0 and BooleanList[IndexOfData][2] >= 1):
-            MasterHitList[IndexOfData] = []
-            BooleanList[IndexOfData][2] = 1
-            MasterHitList[IndexOfData].append(currData[IndexOfData])
-
-        else:
-            BooleanList[IndexOfData][2] = 0
-            MasterHitList[IndexOfData] = []
-
-        BooleanList[IndexOfData][0] = 1
-        BooleanList[IndexOfData][1] = 0
-
-    elif (currData[IndexOfData] < ThresholdList[IndexOfData]):
-        if (BooleanList[IndexOfData][1] == 1 or BooleanList[IndexOfData][2] == 0):
-            MasterHitList[IndexOfData].append(currData[IndexOfData])
-            BooleanList[IndexOfData][2] += 1
-
-        elif (BooleanList[IndexOfData][1] == 0 and BooleanList[IndexOfData][2] >= 1):
-            MasterHitList[IndexOfData] = []
-            BooleanList[IndexOfData][2] = 1
-            MasterHitList[IndexOfData].append(currData[IndexOfData])
-
-        else:
-            BooleanList[IndexOfData][2] = 0
-            MasterHitList[IndexOfData] = []
-
-        BooleanList[IndexOfData][0] = 0
-        BooleanList[IndexOfData][1] = 1
-
-    if (BooleanList[IndexOfData][0] == 1):
-        NeededBW = getNeededBW(ThresholdList, pht(MasterHitList[IndexOfData]), IndexOfData)
-        getFloodingAdjustment(ThresholdList, IndexOfData, NeededBW, OriginalList)
-        MasterHitList[IndexOfData] = []
-        BooleanList[IndexOfData][2] = 0
-
-    elif (BooleanList[IndexOfData][1] == 1):
-        NeededBW = getNeededBW2(ThresholdList, pht(MasterHitList[IndexOfData]), IndexOfData)
-        getBackAdjustment(ThresholdList, IndexOfData, NeededBW, OriginalList)
-        MasterHitList[IndexOfData] = []
-        BooleanList[IndexOfData][2] = 0
-
 def updateThreshold(data, adminSettings, db, cur):
+    global ThresholdList, LimitList, MasterHitList, BooleanList, currData
     newSettings = Settings('','','','','','','','','','','','','','','','','')
+    currData = []
 
-    intializeValues()
+    #intializeValues()
 
     ThresholdList.append(int(adminSettings.tcpThreshold))
     ThresholdList.append(int(adminSettings.udpThreshold))
@@ -203,7 +158,52 @@ def updateThreshold(data, adminSettings, db, cur):
     currData.append(pht(data[2]))
 
     for x in range(0, 3):
-        CalculateThreshold(ThresholdList, LimitList, MasterHitList, BooleanList, x, currData)
+        if (currData[x] > ThresholdList[x]):
+
+            if (BooleanList[x][0] == 1 or BooleanList[x][2] == 0):
+                MasterHitList[x].append(currData[x])
+                BooleanList[x][2] += 1
+
+            elif (BooleanList[x][0] == 0 and BooleanList[x][2] >= 1):
+                MasterHitList[x] = []
+                BooleanList[x][2] = 1
+                MasterHitList[x].append(currData[x])
+
+            else:
+                BooleanList[x][2] = 0
+                MasterHitList[x] = []
+
+            BooleanList[x][0] = 1
+            BooleanList[x][1] = 0
+
+        elif (currData[x] < ThresholdList[x]):
+            if (BooleanList[x][1] == 1 or BooleanList[x][2] == 0):
+                MasterHitList[x].append(currData[x])
+                BooleanList[x][2] += 1
+
+            elif (BooleanList[x][1] == 0 and BooleanList[x][2] >= 1):
+                MasterHitList[x] = []
+                BooleanList[x][2] = 1
+                MasterHitList[x].append(currData[x])
+
+            else:
+                BooleanList[x][2] = 0
+                MasterHitList[x] = []
+
+            BooleanList[x][0] = 0
+            BooleanList[x][1] = 1
+
+        if (BooleanList[x][0] == 1):
+            NeededBW = getNeededBW(ThresholdList, pht(MasterHitList[x]), x)
+            getFloodingAdjustment(ThresholdList, x, NeededBW, OriginalList)
+            MasterHitList[x] = []
+            BooleanList[x][2] = 0
+
+        elif (BooleanList[x][1] == 1):
+            NeededBW = getNeededBW2(ThresholdList, pht(MasterHitList[x]), x)
+            getBackAdjustment(ThresholdList, x, NeededBW, OriginalList)
+            MasterHitList[x] = []
+            BooleanList[x][2] = 0
 
     setattr(newSettings, 'tcpThreshold', float("%.2f" % ThresholdList[0]))
     setattr(newSettings, 'udpThreshold', float("%.2f" % ThresholdList[1]))
