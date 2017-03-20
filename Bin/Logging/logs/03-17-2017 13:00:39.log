@@ -1,0 +1,27 @@
+FLOODED: 
+
+===== CYCLE INFORMATION ======
+Date Started: 02-08-2017 
+Time Started: 14:30:50 
+Date Ended: 02-08-2017 
+Time Ended: 14:35:50 
+
+===== STATISTICS =====
+Nummber of packets obtained: 77
+Number of packets after filtering: 2
+Flows detected: 2
+Flows with flooding: 0
+
+===== THRESHOLD VALUES =====
+Old TCP value: 50.0 
+Old UDP value: 20.0 
+Old ICMP value: 30.0 
+New TCP value: 60.0 
+New UDP value: 20.0 
+New ICMP value: 20.0 
+
+===== SUSPICION COUNT =====
+IP Address: 1.1.1.1
+Count: 1
+IP Address: 2.2.2.2
+Count: 1

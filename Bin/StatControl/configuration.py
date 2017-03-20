@@ -14,6 +14,6 @@ class adminSettings:
     dhcpThresh = 50.00 # percentage with other services under UDP; total with other UDP services should be 100
     tcplimit = 40.00 #Minimum possible threshold for TCP; Calculated values may never go beyond the given number
     udplimit = 15.00 #Minimum possible threshold for UDP; Calculated values may never go beyond the given number
-    icmplimit = 10.00 #Minimum possible threshold for ICMP; Calculated values may never go beyond the given number
+    icmplimit = 5.00 #Minimum possible threshold for ICMP; Calculated values may never go beyond the given number
     bandwidth = 7500 #Bandwidth of the network. Measured in bytes. Use router interface bandwidth.
     cycle_time = 3

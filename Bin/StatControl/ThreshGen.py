@@ -12,6 +12,7 @@ MasterHitList.append(qwe)
 MasterHitList.append(asd)
 MasterHitList.append(zxc)
 
+StateList = [0, 0, 0]
 BooleanList = []
 a_BList = [0, 0, 0]
 b_BList = [0, 0, 0]
@@ -23,7 +24,7 @@ currData = []
 OriginalList = ThresholdList
 
 def intializeValues():
-    global ThresholdList, LimitList, OriginalList, MasterHitList, BooleanList, currData, OriginalList
+    global ThresholdList, LimitList, OriginalList, MasterHitList, BooleanList, StateList, currData, OriginalList
     ThresholdList = []  # this list is the thresholds
     LimitList = []  # these are the lower limits
     OriginalList = []  # un edited List
@@ -35,6 +36,7 @@ def intializeValues():
     MasterHitList.append(asd)
     MasterHitList.append(zxc)
 
+    StateList = [0, 0, 0]
     BooleanList = []
     a_BList = [0, 0, 0]
     b_BList = [0, 0, 0]
@@ -62,42 +64,72 @@ def getNeededBW2(list, Value, IndexOfData):  # Value is the caculated data neede
 
 
 def getFloodingAdjustment(list, IndexOfdata, NeededBW, Original):  # Adjusts The Value of The BW
-    global ThresholdList
+    global ThresholdList, LimitList, StateList
     if (IndexOfdata == 0):
-        if (list[2] - NeededBW >= LimitList[2]):
+        if (list[2] - NeededBW >= LimitList[2] and StateList[2] != 1):
             ThresholdList[0] += NeededBW
             ThresholdList[2] -= NeededBW
-
-        elif (list[1] - NeededBW >= LimitList[1]):
+        elif (list[2] - LimitList[2] >= 0 and StateList[2] != 1):
+            currentAvailable = list[IndexOfdata] - LimitList[2]
+            NeededBW = NeededBW - currentAvailable
+            ThresholdList[0] += currentAvailable
+            ThresholdList[2] -= currentAvailable
+        else:
+            print("No More bw Available 1.1")
+        if (list[1] - NeededBW >= LimitList[1] and StateList[1] != 1):
             ThresholdList[0] += NeededBW
             ThresholdList[1] -= NeededBW
-
+        elif (list[1] - LimitList[1] >= 0 and StateList[1] != 1):
+            currentAvailable = list[1] - LimitList[1]
+            NeededBW = NeededBW - currentAvailable
+            ThresholdList[0] += currentAvailable
+            ThresholdList[1] -= currentAvailable
         else:
-            print("No More bw Available 1")
+            print("No More bw Available 1.2")
 
     elif (IndexOfdata == 1):
-        if (list[2] - NeededBW >= LimitList[2]):
+        if (list[2] - NeededBW >= LimitList[2] and StateList[2] != 1):
             ThresholdList[1] += NeededBW
             ThresholdList[2] -= NeededBW
-
-        elif (list[0] - NeededBW >= LimitList[0]):
+        elif (list[2] - LimitList[2] >= 0 and StateList[2] != 1):
+            currentAvailable = list[2] - LimitList[2]
+            NeededBW = NeededBW - currentAvailable
+            ThresholdList[1] += currentAvailable
+            ThresholdList[2] -= currentAvailable
+        else:
+            print("No More bw Available 2.1")
+        if (list[0] - NeededBW >= LimitList[0] and StateList[0] != 1):
             ThresholdList[1] += NeededBW
             ThresholdList[0] -= NeededBW
-
+        elif (list[0] - LimitList[0] >= 0 and StateList[0] != 1):
+            currentAvailable = list[0] - LimitList[0]
+            NeededBW = NeededBW - currentAvailable
+            ThresholdList[1] += currentAvailable
+            ThresholdList[0] -= currentAvailable
         else:
-            print("No More bw Available 2")
+            print("No More bw Available 2.2")
 
     elif (IndexOfdata == 2):
-        if (list[1] - NeededBW >= LimitList[1]):
+        if (list[1] - NeededBW >= LimitList[1] and StateList[1] != 1):
             ThresholdList[2] += NeededBW
             ThresholdList[1] -= NeededBW
-
-        elif (list[0] - NeededBW >= LimitList[0]):
+        elif (list[1] - LimitList[1] >= 0 and StateList[1] != 1):
+            currentAvailable = list[1] - LimitList[1]
+            NeededBW = NeededBW - currentAvailable
+            ThresholdList[2] += currentAvailable
+            ThresholdList[1] -= currentAvailable
+        else:
+            print("No More bw Available 3.1")
+        if (list[0] - NeededBW >= LimitList[0] and StateList[0] != 1):
             ThresholdList[2] += NeededBW
             ThresholdList[0] -= NeededBW
-
+        elif (list[0] - LimitList[0] >= 0 and StateList[0] != 1):
+            currentAvailable = list[0] - LimitList[0]
+            NeededBW = NeededBW - currentAvailable
+            ThresholdList[2] += currentAvailable
+            ThresholdList[0] -= currentAvailable
         else:
-            print("No More bw Available 3")
+            print("No More bw Available 3.2")
 
 def getBackAdjustment(list, IndexOfdata, NeededBW, Original):  # Adjusts The Value of The BW
     global ThresholdList
@@ -133,7 +165,7 @@ def updateThreshold(data, adminSettings, db, cur):
     newSettings = Settings('','','','','','','','','','','','','','','','','')
     currData = []
 
-    #intializeValues()
+    intializeValues()
 
     ThresholdList.append(int(adminSettings.tcpThreshold))
     ThresholdList.append(int(adminSettings.udpThreshold))
@@ -194,12 +226,14 @@ def updateThreshold(data, adminSettings, db, cur):
             BooleanList[x][1] = 1
 
         if (BooleanList[x][0] == 1):
+            StateList[x] = 1
             NeededBW = getNeededBW(ThresholdList, pht(MasterHitList[x]), x)
             getFloodingAdjustment(ThresholdList, x, NeededBW, OriginalList)
             MasterHitList[x] = []
             BooleanList[x][2] = 0
 
         elif (BooleanList[x][1] == 1):
+            StateList[x] = 0
             NeededBW = getNeededBW2(ThresholdList, pht(MasterHitList[x]), x)
             getBackAdjustment(ThresholdList, x, NeededBW, OriginalList)
             MasterHitList[x] = []
@@ -208,7 +242,7 @@ def updateThreshold(data, adminSettings, db, cur):
     setattr(newSettings, 'tcpThreshold', float("%.2f" % ThresholdList[0]))
     setattr(newSettings, 'udpThreshold', float("%.2f" % ThresholdList[1]))
     setattr(newSettings, 'icmpThreshold', float("%.2f" % ThresholdList[2]))
-
+    #'''
     cur.execute("SELECT MAX(idcycle) FROM cycle")
     obtainedcurID = cur.fetchall()
     curID = int(obtainedcurID[0][0])
@@ -218,7 +252,7 @@ def updateThreshold(data, adminSettings, db, cur):
                 adminSettings.icmpThreshold,float("%.2f" % ThresholdList[0]),float("%.2f" % ThresholdList[1]),
                 float("%.2f" % ThresholdList[2])))
     db.commit()
-
+    #'''
     setattr(newSettings, 'synThresh', adminSettings.synThresh)
     setattr(newSettings, 'synackThresh', adminSettings.synackThresh)
     setattr(newSettings, 'httpThresh', adminSettings.httpThresh)

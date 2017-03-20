@@ -1,16 +1,37 @@
 import sys
 import random
 import time
-import math
 
 
 def updateCurrentThreshold(list):
     sum = 0
     for numbers in list:
         sum += numbers
-    ave = sum / (len(list))
-    return (ave)
+    if (len(list) != 0):
+        ave = sum / (len(list))
+        return (ave)
+    else:
+        return 0
 
+
+def getLowest(list):
+    return min(float(s) for s in list)
+
+
+def setPriority(list, IndexOfData):
+    priorityList = [0, 0, 0]
+    if (IndexOfData == 0):
+        priorityList[0] = 0
+        priorityList[1] = 2
+        priorityList[2] = 1
+    elif (IndexOfData == 1):
+        priorityList[0] = 2
+        priorityList[1] = 0
+        priorityList[2] = 1
+    if (IndexOfData == 2):
+        priorityList[0] = 2
+        priorityList[1] = 1
+        priorityList[2] = 0
 
 
 def getNeededBW(list, Value, IndexOfData):  # Value is the caculated data needed
@@ -23,32 +44,73 @@ def getNeededBW2(list, Value, IndexOfData):  # Value is the caculated data neede
 
 def getFloodingAdjustment(list, IndexOfdata, NeededBW, Original):  # Adjusts The Value of The BW
     if (IndexOfdata == 0):
-        if (list[2] - NeededBW >= LimitList[2]):
+        if (list[2] - NeededBW >= LimitList[2] and StateList[2] != 1):
             ThresholdList[0] += NeededBW
             ThresholdList[2] -= NeededBW
-        elif (list[1] - NeededBW >= LimitList[1]):
+        elif (list[2] - LimitList[2] >= 0 and StateList[2] != 1):
+            currentAvailable = list[IndexOfdata] - LimitList[2]
+            NeededBW = NeededBW - currentAvailable
+            ThresholdList[0] += currentAvailable
+            ThresholdList[2] -= currentAvailable
+        else:
+            print("No More bw Available 1.1")
+        if (list[1] - NeededBW >= LimitList[1] and StateList[1] != 1):
             ThresholdList[0] += NeededBW
             ThresholdList[1] -= NeededBW
+        elif (list[1] - LimitList[1] >= 0 and StateList[1] != 1):
+            currentAvailable = list[1] - LimitList[1]
+            NeededBW = NeededBW - currentAvailable
+            ThresholdList[0] += currentAvailable
+            ThresholdList[1] -= currentAvailable
         else:
-            print("No More bw Available 1")
+            print("No More bw Available 1.2")
     elif (IndexOfdata == 1):
-        if (list[2] - NeededBW >= LimitList[2]):
+        if (list[2] - NeededBW >= LimitList[2] and StateList[2] != 1):
             ThresholdList[1] += NeededBW
             ThresholdList[2] -= NeededBW
-        elif (list[0] - NeededBW >= LimitList[0]):
+        elif (list[2] - LimitList[2] >= 0 and StateList[2] != 1):
+            currentAvailable = list[2] - LimitList[2]
+            NeededBW = NeededBW - currentAvailable
+            ThresholdList[1] += currentAvailable
+            ThresholdList[2] -= currentAvailable
+        else:
+            print("No More bw Available 2.1")
+        if (list[0] - NeededBW >= LimitList[0] and StateList[0] != 1):
             ThresholdList[1] += NeededBW
             ThresholdList[0] -= NeededBW
+        elif (list[0] - LimitList[0] >= 0 and StateList[0] != 1):
+            currentAvailable = list[0] - LimitList[0]
+            NeededBW = NeededBW - currentAvailable
+            ThresholdList[1] += currentAvailable
+            ThresholdList[0] -= currentAvailable
         else:
-            print("No More bw Available 2")
+            print("No More bw Available 2.2")
     elif (IndexOfdata == 2):
-        if (list[1] - NeededBW >= LimitList[1]):
+        print("NeededBW", NeededBW)
+        print("State List :", StateList)
+        print("Butal: ", list[1] - LimitList[1])
+        print("List[1]", list[1])
+        print(LimitList[1])
+        if (list[1] - NeededBW >= LimitList[1] and StateList[1] != 1):
             ThresholdList[2] += NeededBW
             ThresholdList[1] -= NeededBW
-        elif (list[0] - NeededBW >= LimitList[0]):
+        elif (list[1] - LimitList[1] >= 0 and StateList[1] != 1):
+            currentAvailable = list[1] - LimitList[1]
+            NeededBW = NeededBW - currentAvailable
+            ThresholdList[2] += currentAvailable
+            ThresholdList[1] -= currentAvailable
+        else:
+            print("No More bw Available 3.1")
+        if (list[0] - NeededBW >= LimitList[0] and StateList[0] != 1):
             ThresholdList[2] += NeededBW
             ThresholdList[0] -= NeededBW
+        elif (list[0] - LimitList[0] >= 0 and StateList[0] != 1):
+            currentAvailable = list[0] - LimitList[0]
+            NeededBW = NeededBW - currentAvailable
+            ThresholdList[2] += currentAvailable
+            ThresholdList[0] -= currentAvailable
         else:
-            print("No More bw Available 3")
+            print("No More bw Available 3.2")
 
 
 def getBackAdjustment(list, IndexOfdata, NeededBW, Original):  # Adjusts The Value of The BW
@@ -105,11 +167,13 @@ def CalculateThreshold(ThresholdList, LimitList, MasterHitList, BooleanList, Ind
         BooleanList[IndexOfData][0] = 0
         BooleanList[IndexOfData][1] = 1
     if (counter >= interval and BooleanList[IndexOfData][0] == 1):
+        StateList[IndexOfData] = 1
         NeededBW = getNeededBW(ThresholdList, updateCurrentThreshold(MasterHitList[IndexOfData]), IndexOfData)
         getFloodingAdjustment(ThresholdList, IndexOfData, NeededBW, OriginalList)
         MasterHitList[IndexOfData] = []
         BooleanList[IndexOfData][2] = 0
     elif (counter >= interval and BooleanList[IndexOfData][1] == 1):
+        StateList[IndexOfData] = 0
         NeededBW = getNeededBW2(ThresholdList, updateCurrentThreshold(MasterHitList[IndexOfData]), IndexOfData)
         getBackAdjustment(ThresholdList, IndexOfData, NeededBW, OriginalList)
         MasterHitList[IndexOfData] = []
@@ -133,7 +197,7 @@ ICMP = input('Enter ICMP size: ')
 TCPLowerLimit = input('Enter TCP Lower Limit: ')
 UDPLowerLimit = input('Enter UDP Lower Limit size: ')
 ICMPLowerLimit = input('Enter ICMPLowerLimit Lower Limit: ')
-
+StateList = [0, 0, 0]
 # init_Threshold =input('Enter Your Threshold(Threshold for data to be considered as a possible attack')
 # Threshold = init_Threshold
 # Threshold = float(Threshold)
@@ -142,7 +206,7 @@ ICMPLowerLimit = input('Enter ICMPLowerLimit Lower Limit: ')
 # lowerlimit = int(lowerlimit)
 # x = random.uniform(1, 100)
 
-interval = input('Enter you Interval size(Number of hits before Threshold is recalculated)')
+interval = input('Enter you Interval size(Number of hits before Threshold is recalculated): ')
 interval = int(interval)
 counter = 0
 TCP = int(TCP)
@@ -170,14 +234,14 @@ OriginalList = ThresholdList
 while (True):
     currData = []
 
-    TCPList = [random.uniform(1, 100), random.uniform(1, 100), random.uniform(1, 100)];
-    UDPList = [random.uniform(1, 100), random.uniform(1, 100), random.uniform(1, 100)];
-    ICMPList = [random.uniform(1, 100), random.uniform(1, 100), random.uniform(1, 100)];
+    TCPList = [random.uniform(60, 70), random.uniform(60, 70), random.uniform(60, 70)]
+    UDPList = [0,0,0]
+    ICMPList = [0,0,0]
     currData.append(updateCurrentThreshold(TCPList))
     currData.append(updateCurrentThreshold(UDPList))
     currData.append(updateCurrentThreshold(ICMPList))
 
-    time.sleep(3)
+    time.sleep(4)
     print("New Data: ", currData[0])
     print("New Data: ", currData[1])
     print("New Data: ", currData[2])
@@ -190,10 +254,11 @@ while (True):
     counter += 1
     print(BooleanList)
     print(MasterHitList)
-    print("TCP Thresh: " + str("%.2f" % ThresholdList[0]))
-    print("UDP Thresh: " + str("%.2f" % ThresholdList[1]))
-    print("ICMP Thresh: " + str("%.2f" % ThresholdList[2]))
-    print("Total Thresh: " + str(float("%.2f" % ThresholdList[0]) + float("%.2f" % ThresholdList[1]) + float("%.2f" % ThresholdList[2])))
+    print(ThresholdList)
+    print('+===============================+')
+
+
+
 
 
 
