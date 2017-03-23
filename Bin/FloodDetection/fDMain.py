@@ -5,6 +5,7 @@ floodedFlows = []
 sPackets = []
 numFlood = 0
 flowBefore = 0
+lenPackets = []
 
 def getFlowBefore():
     return flowBefore
@@ -12,12 +13,20 @@ def getFlowBefore():
 def getNumFloods():
     return numFlood
 
+def getLenPackets():
+    return lenPackets
+
 def fDModule(packets, settings):
-    global flows2, floodedFlows, sPackets, numFlood, flowBefore
+    global flows2, floodedFlows, sPackets, lenPackets, numFlood, flowBefore
     floodedFlows = []
     flows2 = []
     numFlood = 0
+    lenPackets = []
     sPackets = protCounterSM.segregatePackets(packets)
+
+    lenPackets.append(len(sPackets[0]))
+    lenPackets.append(len(sPackets[1]))
+    lenPackets.append(len(sPackets[2]))
 
     #This segment searches for the priority protocol (Highest Threshold). It will be analyzed first for flows.
     if len(sPackets[0]) > len (sPackets[1]) and len(sPackets[0]) > len (sPackets[2]):

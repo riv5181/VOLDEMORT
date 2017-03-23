@@ -16,7 +16,7 @@ def printResult(cur, query):
 
     return string
 
-def createReport(currSettings,db, cur, numPackets, numAfter, numFlows, withFlood):
+def createReport(currSettings,db, cur, numPackets, numAfter, numFlows, withFlood, lenPackets):
     location = "/home/voldemort/Desktop/IMPLEMENTATION/Bin/Logging/logs/"
     fileName = str(strftime("%m-%d-%Y %H:%M:%S", gmtime()))
 
@@ -37,6 +37,9 @@ def createReport(currSettings,db, cur, numPackets, numAfter, numFlows, withFlood
     report.write("===== STATISTICS =====" + "\n")
     report.write("Nummber of packets obtained: " + str(numPackets) + "\n")
     report.write("Number of packets after filtering: " + str(numAfter) + "\n")
+    report.write("Number of TCP packets after filtering: " + str(lenPackets[0]) + "\n")
+    report.write("Number of UDP packets after filtering: " + str(lenPackets[1]) + "\n")
+    report.write("Number of ICMP packets after filtering: " + str(lenPackets[2]) + "\n")
     report.write("Flows detected: " + str(numFlows) + "\n")
     report.write("Flows with flooding: " + str(withFlood) + "\n\n")
 
