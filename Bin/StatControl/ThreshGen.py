@@ -160,104 +160,114 @@ def getBackAdjustment(list, IndexOfdata, NeededBW, Original):  # Adjusts The Val
             ThresholdList[1] += NeededBW
             ThresholdList[2] -= NeededBW
 
-def updateThreshold(data, adminSettings, db, cur):
+def updateThreshold(data, currSettings, adminSettings, db, cur):
     global ThresholdList, LimitList, MasterHitList, BooleanList, currData
     newSettings = Settings('','','','','','','','','','','','','','','','','')
     currData = []
 
     intializeValues()
 
-    ThresholdList.append(int(adminSettings.tcpThreshold))
-    ThresholdList.append(int(adminSettings.udpThreshold))
-    ThresholdList.append(int(adminSettings.icmpThreshold))
-    LimitList.append(int(adminSettings.tcplimit))
-    LimitList.append(int(adminSettings.udplimit))
-    LimitList.append(int(adminSettings.icmplimit))
+    ThresholdList.append(int(currSettings.tcpThreshold))
+    ThresholdList.append(int(currSettings.udpThreshold))
+    ThresholdList.append(int(currSettings.icmpThreshold))
+    LimitList.append(int(currSettings.tcplimit))
+    LimitList.append(int(currSettings.udplimit))
+    LimitList.append(int(currSettings.icmplimit))
 
-    setattr(newSettings, 'maxTime', adminSettings.maxTime)
-    setattr(newSettings, 'device', adminSettings.device)
-    setattr(newSettings, 'network', adminSettings.network)
-    setattr(newSettings, 'bandwidth', adminSettings.bandwidth)
-    setattr(newSettings, 'cycle_time', adminSettings.cycle_time)
-    setattr(newSettings, 'maxFlows', adminSettings.maxFlows)
-    setattr(newSettings, 'tcplimit', adminSettings.tcplimit)
-    setattr(newSettings, 'udplimit', adminSettings.udplimit)
-    setattr(newSettings, 'icmplimit', adminSettings.icmplimit)
+    setattr(newSettings, 'maxTime', currSettings.maxTime)
+    setattr(newSettings, 'device', currSettings.device)
+    setattr(newSettings, 'network', currSettings.network)
+    setattr(newSettings, 'bandwidth', currSettings.bandwidth)
+    setattr(newSettings, 'cycle_time', currSettings.cycle_time)
+    setattr(newSettings, 'maxFlows', currSettings.maxFlows)
+    setattr(newSettings, 'tcplimit', currSettings.tcplimit)
+    setattr(newSettings, 'udplimit', currSettings.udplimit)
+    setattr(newSettings, 'icmplimit', currSettings.icmplimit)
 
     # Take note of assigned IDs: 0 = TCP; 1 = UDP; 2 = ICMP
     currData.append(pht(data[0]))
     currData.append(pht(data[1]))
     currData.append(pht(data[2]))
 
-    for x in range(0, 3):
-        if (currData[x] > ThresholdList[x]):
+    if currData[0] < adminSettings.tcplimit and currData[1] < adminSettings.udplimit \
+        and currData[2] < adminSettings.icmplimit:
+        setattr(newSettings, 'tcpThreshold', float("%.2f" % adminSettings.tcpThreshold))
+        setattr(newSettings, 'udpThreshold', float("%.2f" % adminSettings.udpThreshold))
+        setattr(newSettings, 'icmpThreshold', float("%.2f" % adminSettings.icmpThreshold))
 
-            if (BooleanList[x][0] == 1 or BooleanList[x][2] == 0):
-                MasterHitList[x].append(currData[x])
-                BooleanList[x][2] += 1
+    else:
+        for x in range(0, 3):
+            if (currData[x] > ThresholdList[x]):
 
-            elif (BooleanList[x][0] == 0 and BooleanList[x][2] >= 1):
+                if (BooleanList[x][0] == 1 or BooleanList[x][2] == 0):
+                    MasterHitList[x].append(currData[x])
+                    BooleanList[x][2] += 1
+
+                elif (BooleanList[x][0] == 0 and BooleanList[x][2] >= 1):
+                    MasterHitList[x] = []
+                    BooleanList[x][2] = 1
+                    MasterHitList[x].append(currData[x])
+
+                else:
+                    BooleanList[x][2] = 0
+                    MasterHitList[x] = []
+
+                BooleanList[x][0] = 1
+                BooleanList[x][1] = 0
+
+            elif (currData[x] < ThresholdList[x]):
+                if (BooleanList[x][1] == 1 or BooleanList[x][2] == 0):
+                    MasterHitList[x].append(currData[x])
+                    BooleanList[x][2] += 1
+
+                elif (BooleanList[x][1] == 0 and BooleanList[x][2] >= 1):
+                    MasterHitList[x] = []
+                    BooleanList[x][2] = 1
+                    MasterHitList[x].append(currData[x])
+
+                else:
+                    BooleanList[x][2] = 0
+                    MasterHitList[x] = []
+
+                BooleanList[x][0] = 0
+                BooleanList[x][1] = 1
+
+            if (BooleanList[x][0] == 1):
+                StateList[x] = 1
+                NeededBW = getNeededBW(ThresholdList, pht(MasterHitList[x]), x)
+                getFloodingAdjustment(ThresholdList, x, NeededBW, OriginalList)
                 MasterHitList[x] = []
-                BooleanList[x][2] = 1
-                MasterHitList[x].append(currData[x])
-
-            else:
                 BooleanList[x][2] = 0
+
+            elif (BooleanList[x][1] == 1):
+                StateList[x] = 0
+                NeededBW = getNeededBW2(ThresholdList, pht(MasterHitList[x]), x)
+                getBackAdjustment(ThresholdList, x, NeededBW, OriginalList)
                 MasterHitList[x] = []
-
-            BooleanList[x][0] = 1
-            BooleanList[x][1] = 0
-
-        elif (currData[x] < ThresholdList[x]):
-            if (BooleanList[x][1] == 1 or BooleanList[x][2] == 0):
-                MasterHitList[x].append(currData[x])
-                BooleanList[x][2] += 1
-
-            elif (BooleanList[x][1] == 0 and BooleanList[x][2] >= 1):
-                MasterHitList[x] = []
-                BooleanList[x][2] = 1
-                MasterHitList[x].append(currData[x])
-
-            else:
                 BooleanList[x][2] = 0
-                MasterHitList[x] = []
 
-            BooleanList[x][0] = 0
-            BooleanList[x][1] = 1
+        setattr(newSettings, 'tcpThreshold', float("%.2f" % ThresholdList[0]))
+        setattr(newSettings, 'udpThreshold', float("%.2f" % ThresholdList[1]))
+        setattr(newSettings, 'icmpThreshold', float("%.2f" % ThresholdList[2]))
 
-        if (BooleanList[x][0] == 1):
-            StateList[x] = 1
-            NeededBW = getNeededBW(ThresholdList, pht(MasterHitList[x]), x)
-            getFloodingAdjustment(ThresholdList, x, NeededBW, OriginalList)
-            MasterHitList[x] = []
-            BooleanList[x][2] = 0
-
-        elif (BooleanList[x][1] == 1):
-            StateList[x] = 0
-            NeededBW = getNeededBW2(ThresholdList, pht(MasterHitList[x]), x)
-            getBackAdjustment(ThresholdList, x, NeededBW, OriginalList)
-            MasterHitList[x] = []
-            BooleanList[x][2] = 0
-
-    setattr(newSettings, 'tcpThreshold', float("%.2f" % ThresholdList[0]))
-    setattr(newSettings, 'udpThreshold', float("%.2f" % ThresholdList[1]))
-    setattr(newSettings, 'icmpThreshold', float("%.2f" % ThresholdList[2]))
     #'''
     cur.execute("SELECT MAX(idcycle) FROM cycle")
     obtainedcurID = cur.fetchall()
     curID = int(obtainedcurID[0][0])
 
     cur.execute("INSERT INTO threshold (idcycle,old_tcp,old_udp,old_icmp,new_tcp,new_udp,new_icmp) "
-                "VALUES (%s, %s, %s, %s, %s, %s, %s)", (curID,adminSettings.tcpThreshold,adminSettings.udpThreshold,
-                adminSettings.icmpThreshold,float("%.2f" % ThresholdList[0]),float("%.2f" % ThresholdList[1]),
+                "VALUES (%s, %s, %s, %s, %s, %s, %s)", (curID, currSettings.tcpThreshold, currSettings.udpThreshold,
+                currSettings.icmpThreshold, float("%.2f" % ThresholdList[0]), float("%.2f" % ThresholdList[1]),
                 float("%.2f" % ThresholdList[2])))
     db.commit()
     #'''
-    setattr(newSettings, 'synThresh', adminSettings.synThresh)
-    setattr(newSettings, 'synackThresh', adminSettings.synackThresh)
-    setattr(newSettings, 'httpThresh', adminSettings.httpThresh)
-    setattr(newSettings, 'dnsThresh', adminSettings.dnsThresh)
-    setattr(newSettings, 'dhcpThresh', adminSettings.dhcpThresh)
+
+    setattr(newSettings, 'synThresh', currSettings.synThresh)
+    setattr(newSettings, 'synackThresh', currSettings.synackThresh)
+    setattr(newSettings, 'httpThresh', currSettings.httpThresh)
+    setattr(newSettings, 'dnsThresh', currSettings.dnsThresh)
+    setattr(newSettings, 'dhcpThresh', currSettings.dhcpThresh)
+
     return newSettings
 
 

@@ -66,7 +66,7 @@ def createReport(currSettings,db, cur, numPackets, numAfter, numFlows, withFlood
     while i < len(output):
         report.write("IP Address: " + str(output[i][j]) + "\n")
         j = j + 1
-        report.write("Count: " + str(output[i][j]) + "\n")
+        report.write("Count: " + str(output[i][j]) + "\n\n")
         i = i + 1
         j = 0
 

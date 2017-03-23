@@ -67,7 +67,7 @@ try:
                 print('ICMP: ' + str(currSettings.icmpThreshold))
                 print(' ')
 
-                currSettings = StatControl.updateThreshold(data,currSettings, db, cur)
+                currSettings = StatControl.updateThreshold(data,currSettings, StatControl.adminSettings, db, cur)
 
                 print('-----NEW THRESHOLDS-----')
                 print('TCP: ' + str(currSettings.tcpThreshold))
