@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS `cycle`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cycle` (
-  `idcycle` int(11) NOT NULL,
+  `idcycle` int(11) NOT NULL AUTO_INCREMENT,
   `cycle_time` int(11) NOT NULL,
   `date_start` varchar(50) NOT NULL,
   `time_start` varchar(50) NOT NULL,
@@ -33,7 +33,7 @@ CREATE TABLE `cycle` (
   `time_end` varchar(50) NOT NULL,
   PRIMARY KEY (`idcycle`),
   UNIQUE KEY `idCycle_UNIQUE` (`idcycle`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -42,7 +42,7 @@ CREATE TABLE `cycle` (
 
 LOCK TABLES `cycle` WRITE;
 /*!40000 ALTER TABLE `cycle` DISABLE KEYS */;
-INSERT INTO `cycle` VALUES (1,0,'01-12-2017','10:20:00','01-12-2017','10:25:00'),(2,0,'02-08-2017','14:30:50','02-08-2017','14:35:50');
+INSERT INTO `cycle` VALUES (1,0,'02-08-2017','14:30:50','02-08-2017','14:35:50'),(2,0,'03-26-2017','10:20:00','03-27-2017','10:25:00');
 /*!40000 ALTER TABLE `cycle` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -118,4 +118,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-03-24 12:56:08
+-- Dump completed on 2017-03-24 14:20:18

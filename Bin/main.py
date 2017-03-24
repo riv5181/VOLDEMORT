@@ -59,6 +59,8 @@ try:
                 timeEnd = ''
                 packets = []
                 flows = []
+                Logging.createReport(Tracking.getCurrCycleTime(), cur, blah1, blah2, blah3, blah4,
+                                     FloodDetection.getLenPackets())
 
             else:
                 print('-----OLD THRESHOLDS-----')
@@ -70,6 +72,9 @@ try:
                 print(' ')
 
                 currSettings = StatControl.updateThreshold(data,currSettings, StatControl.adminSettings, db, cur)
+                Logging.createReport(Tracking.getCurrCycleTime(), cur, blah1, blah2, blah3, blah4,
+                                     FloodDetection.getLenPackets())
+                Tracking.setCurrCycleTime(cur)
 
                 print('-----NEW THRESHOLDS-----')
                 print('TCP: ' + str(currSettings.tcpThreshold))
@@ -83,8 +88,6 @@ try:
                     Preprocessor.setFloodingEvent(False)
 
                 #raw_input("Press Enter to Continue")
-
-            Logging.createReport(currSettings, db, cur, blah1, blah2, blah3, blah4, FloodDetection.getLenPackets())
 
         else:
             Logging.createReportNoFlood(currSettings, timeStart, timeEnd, blah1, noFPackets)

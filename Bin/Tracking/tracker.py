@@ -20,6 +20,9 @@ def setCurrCycleTime(cur):
     obtainedcurID = cur.fetchall()
     current_cycle_time = int(obtainedcurID[0][0]) + 1
 
+def getCurrCycleTime():
+    return current_cycle_time
+
 def checkDataSizeSimplified(flows, protocol):
     totalData = 0
     max = len(flows)
@@ -110,7 +113,6 @@ def tracker(flows, settings, timeStart, timeEnd, db, cur):
         data.append(tcp) # data[0]
         data.append(udp) # data[1]
         data.append(icmp)  # data[2]
-        setCurrCycleTime(cur)
 
         tcp = []
         udp = []
