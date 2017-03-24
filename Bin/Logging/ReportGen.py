@@ -1,5 +1,32 @@
 from time import gmtime, strftime
 
+def segregatePackets(packets):
+    sortedPackets = []
+    tcpPackets = []
+    udpPackets = []
+    icmpPackets = []
+    i = 0
+    max = len(packets)
+
+    while i < max:
+        if packets[i].protocol == 'TCP':
+            tcpPackets.append(packets[i])
+
+        elif packets[i].protocol == 'UDP':
+            udpPackets.append(packets[i])
+
+        else:
+            icmpPackets.append(packets[i])
+
+        max = len(packets)
+        i = i + 1
+
+    sortedPackets.append(tcpPackets)
+    sortedPackets.append(udpPackets)
+    sortedPackets.append(icmpPackets)
+
+    return sortedPackets
+
 def printResult(cur, query):
     string = ""
     cur.execute(query)
@@ -72,5 +99,35 @@ def createReport(currSettings,db, cur, numPackets, numAfter, numFlows, withFlood
         report.write("Count: " + str(output[i][j]) + "\n\n")
         i = i + 1
         j = 0
+
+    report.close()
+
+def createReportNoFlood(currSettings, timeStart, timeEnd, numPackets, packets):
+    location = "/home/voldemort/Desktop/IMPLEMENTATION/Bin/Logging/logs/"
+    fileName = str(strftime("%m-%d-%Y %H:%M:%S NF", gmtime()))
+
+    report = open(location+fileName+".log","w")
+
+    report.write("===== CYCLE INFORMATION ======" + "\n")
+    report.write("Time Started: " + timeStart + "\n")
+    report.write("Time Ended: " + timeEnd + "\n\n")
+
+    temp = segregatePackets(packets)
+
+    report.write("===== STATISTICS =====" + "\n")
+    report.write("Nummber of packets obtained: " + str(numPackets) + "\n")
+    report.write("Number of TCP packets: " + str(len(temp[0])) + "\n")
+    report.write("Number of UDP packets: " + str(len(temp[1])) + "\n")
+    report.write("Number of ICMP packets: " + str(len(temp[2])) + "\n")
+
+    # Service (Percentage) Threshold WILL ALWAYS stay the same, but it
+    # doesn't mean it won't be logged. It adjusts based on prot threshold, technically.
+    report.write("===== THRESHOLD VALUES =====" + "\n")
+    report.write("Old TCP value: " + str(currSettings.tcpThreshold) + "\n")
+    report.write("Old UDP value: " + str(currSettings.tcpThreshold) + "\n")
+    report.write("Old ICMP value: " + str(currSettings.tcpThreshold) + "\n")
+    report.write("New TCP value: " + str(currSettings.tcpThreshold) + "\n")
+    report.write("New UDP value: " + str(currSettings.tcpThreshold) + "\n")
+    report.write("New ICMP value: " + str(currSettings.tcpThreshold) + "\n\n")
 
     report.close()

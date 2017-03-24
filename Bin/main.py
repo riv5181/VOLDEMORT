@@ -37,6 +37,7 @@ try:
 
         print('BEFORE FILTER: ' + str(len(packets)))
         blah1 = len(packets)
+        noFPackets = packets
         packets = Preprocessor.filterObtainedPackets(packets, mainIP, network)
         print('AFTER FILTER: ' + str(len(packets)))
         blah2 = len(packets)
@@ -85,11 +86,13 @@ try:
             Logging.createReport(currSettings, db, cur, blah1, blah2, blah3, blah4, FloodDetection.getLenPackets())
 
         else:
+            Logging.createReportNoFlood(currSettings, timeStart, timeEnd, blah1, noFPackets)
             packets = []
             flows = []
             timeStart = ''
             timeEnd = ''
             recorded = []
+            noFPackets = []
 
 except KeyboardInterrupt:
     print('QUIT!')

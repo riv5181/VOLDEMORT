@@ -1,1 +1,2 @@
 from ReportGen import createReport
+from ReportGen import createReportNoFlood

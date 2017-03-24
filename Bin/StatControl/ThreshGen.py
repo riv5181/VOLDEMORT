@@ -194,6 +194,19 @@ def updateThreshold(data, currSettings, adminSettings, db, cur):
         setattr(newSettings, 'tcpThreshold', float("%.2f" % adminSettings.tcpThreshold))
         setattr(newSettings, 'udpThreshold', float("%.2f" % adminSettings.udpThreshold))
         setattr(newSettings, 'icmpThreshold', float("%.2f" % adminSettings.icmpThreshold))
+        # '''
+        cur.execute("SELECT MAX(idcycle) FROM cycle")
+        obtainedcurID = cur.fetchall()
+        curID = int(obtainedcurID[0][0])
+
+        cur.execute("INSERT INTO threshold (idcycle,old_tcp,old_udp,old_icmp,new_tcp,new_udp,new_icmp) "
+                    "VALUES (%s, %s, %s, %s, %s, %s, %s)", (curID, currSettings.tcpThreshold, currSettings.udpThreshold,
+                                                            currSettings.icmpThreshold,
+                                                            float("%.2f" % adminSettings.tcpThreshold),
+                                                            float("%.2f" % adminSettings.udpThreshold),
+                                                            float("%.2f" % adminSettings.icmpThreshold)))
+        db.commit()
+        # '''
 
     else:
         for x in range(0, 3):
@@ -250,17 +263,17 @@ def updateThreshold(data, currSettings, adminSettings, db, cur):
         setattr(newSettings, 'udpThreshold', float("%.2f" % ThresholdList[1]))
         setattr(newSettings, 'icmpThreshold', float("%.2f" % ThresholdList[2]))
 
-    #'''
-    cur.execute("SELECT MAX(idcycle) FROM cycle")
-    obtainedcurID = cur.fetchall()
-    curID = int(obtainedcurID[0][0])
+        #'''
+        cur.execute("SELECT MAX(idcycle) FROM cycle")
+        obtainedcurID = cur.fetchall()
+        curID = int(obtainedcurID[0][0])
 
-    cur.execute("INSERT INTO threshold (idcycle,old_tcp,old_udp,old_icmp,new_tcp,new_udp,new_icmp) "
-                "VALUES (%s, %s, %s, %s, %s, %s, %s)", (curID, currSettings.tcpThreshold, currSettings.udpThreshold,
-                currSettings.icmpThreshold, float("%.2f" % ThresholdList[0]), float("%.2f" % ThresholdList[1]),
-                float("%.2f" % ThresholdList[2])))
-    db.commit()
-    #'''
+        cur.execute("INSERT INTO threshold (idcycle,old_tcp,old_udp,old_icmp,new_tcp,new_udp,new_icmp) "
+                    "VALUES (%s, %s, %s, %s, %s, %s, %s)", (curID, currSettings.tcpThreshold, currSettings.udpThreshold,
+                    currSettings.icmpThreshold, float("%.2f" % ThresholdList[0]), float("%.2f" % ThresholdList[1]),
+                    float("%.2f" % ThresholdList[2])))
+        db.commit()
+        #'''
 
     setattr(newSettings, 'synThresh', currSettings.synThresh)
     setattr(newSettings, 'synackThresh', currSettings.synackThresh)
