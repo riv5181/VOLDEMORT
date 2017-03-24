@@ -28,7 +28,10 @@ def getIPAddress(ifname):
     )[20:24])
 
 mainIP = str(getIPAddress(device1))
-Tracking.setCurrCycleTime(cur)
+
+cur.execute("SELECT MAX(cycle_time) FROM cycle")
+obtainedcurID = cur.fetchall()
+Tracking.setCurrCycleTime(int(obtainedcurID[0][0]) + 1)
 
 try:
     while True:
@@ -74,7 +77,7 @@ try:
                 currSettings = StatControl.updateThreshold(data,currSettings, StatControl.adminSettings, db, cur)
                 Logging.createReport(Tracking.getCurrCycleTime(), cur, blah1, blah2, blah3, blah4,
                                      FloodDetection.getLenPackets())
-                Tracking.setCurrCycleTime(cur)
+                Tracking.setCurrCycleTime(Tracking.getCurrCycleTime() + 1)
 
                 print('-----NEW THRESHOLDS-----')
                 print('TCP: ' + str(currSettings.tcpThreshold))

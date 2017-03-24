@@ -14,11 +14,9 @@ def setFloodingNoExist(event):
     global noMoreFlood
     noMoreFlood = event
 
-def setCurrCycleTime(cur):
+def setCurrCycleTime(num):
     global current_cycle_time
-    cur.execute("SELECT MAX(cycle_time) FROM cycle")
-    obtainedcurID = cur.fetchall()
-    current_cycle_time = int(obtainedcurID[0][0]) + 1
+    current_cycle_time = num
 
 def getCurrCycleTime():
     return current_cycle_time
