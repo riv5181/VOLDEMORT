@@ -28,6 +28,7 @@ def getIPAddress(ifname):
     )[20:24])
 
 mainIP = str(getIPAddress(device1))
+Tracking.setCurrCycleTime(cur)
 
 try:
     while True:

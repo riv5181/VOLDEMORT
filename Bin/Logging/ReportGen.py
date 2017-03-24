@@ -47,11 +47,15 @@ def createReport(currSettings,db, cur, numPackets, numAfter, numFlows, withFlood
     location = "/home/voldemort/Desktop/IMPLEMENTATION/Bin/Logging/logs/"
     fileName = str(strftime("%m-%d-%Y %H:%M:%S", gmtime()))
 
-    report = open(location+fileName+".log","w")
+    query = "SELECT cycle_time FROM cycle WHERE idcycle = (SELECT max(idcycle) FROM cycle)"
+
+    report = open(location+fileName+" C" +printResult(cur, query)+".log","w")
     query = "SELECT protocol, service FROM flow f WHERE idcycle = (SELECT max(idcycle) FROM cycle) AND status = 1"
     report.write("FLOODED: " + printResult(cur,query) + "\n\n") #Insert Protocol and/or Services. Will use separate function.
 
     report.write("===== CYCLE INFORMATION ======" + "\n")
+    query = "SELECT cycle_time FROM cycle WHERE idcycle = (SELECT max(idcycle) FROM cycle)"
+    report.write("Cycle Number: " + printResult(cur, query) + "\n")
     query = "SELECT date_start FROM cycle WHERE idcycle = (SELECT max(idcycle) FROM cycle)"
     report.write("Date Started: " + printResult(cur,query) + "\n")
     query = "SELECT time_start FROM  cycle WHERE idcycle = (SELECT max(idcycle) FROM cycle)"

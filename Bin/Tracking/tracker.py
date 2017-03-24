@@ -1,6 +1,7 @@
 
 cycle_count = 0
 cycle_noFlood = 0
+current_cycle_time = 0
 noMoreFlood = False
 icmp = []
 tcp = []
@@ -12,6 +13,12 @@ def getFloodingNoExist():
 def setFloodingNoExist(event):
     global noMoreFlood
     noMoreFlood = event
+
+def setCurrCycleTime(cur):
+    global current_cycle_time
+    cur.execute("SELECT MAX(cycle_time) FROM cycle")
+    obtainedcurID = cur.fetchall()
+    current_cycle_time = int(obtainedcurID[0][0]) + 1
 
 def checkDataSizeSimplified(flows, protocol):
     totalData = 0
@@ -39,15 +46,15 @@ def checkFloodingExist(flows):
     return False
 
 def tracker(flows, settings, timeStart, timeEnd, db, cur):
-    global cycle_count, cycle_noFlood, icmp, tcp, udp, noMoreFlood#,tcpsyn, tcpsynack, tcphttp, udpdns, udpdhcp
+    global cycle_count, cycle_noFlood, icmp, tcp, udp, noMoreFlood, current_cycle_time
     data = []
 
     if checkFloodingExist(flows):
         #Insert code to put flows to logging module
         noMoreFlood = False
         #'''
-        cur.execute("INSERT INTO cycle (date_start,time_start,date_end,time_end) VALUES (%s, %s, %s, %s)",
-                    (timeStart[0:10],timeStart[11:19],timeEnd[0:10],timeEnd[11:19]))
+        cur.execute("INSERT INTO cycle (cycle_time,date_start,time_start,date_end,time_end) VALUES (%s,%s,%s,%s,%s)",
+                    (current_cycle_time,timeStart[0:10],timeStart[11:19],timeEnd[0:10],timeEnd[11:19]))
         db.commit()
         cur.execute("SELECT MAX(idcycle) FROM cycle")
         obtainedcurID = cur.fetchall()
@@ -103,6 +110,7 @@ def tracker(flows, settings, timeStart, timeEnd, db, cur):
         data.append(tcp) # data[0]
         data.append(udp) # data[1]
         data.append(icmp)  # data[2]
+        setCurrCycleTime(cur)
 
         tcp = []
         udp = []
