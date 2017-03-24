@@ -15,5 +15,5 @@ class adminSettings:
     tcplimit = 40.00 #Minimum possible threshold for TCP; Calculated values may never go beyond the given number
     udplimit = 15.00 #Minimum possible threshold for UDP; Calculated values may never go beyond the given number
     icmplimit = 5.00 #Minimum possible threshold for ICMP; Calculated values may never go beyond the given number
-    bandwidth = 7500 * 0.9 #Bandwidth of the network multiplied with measurement only used. Measured in bytes.
+    bandwidth = 1158000 * 0.9 #Bandwidth of the network multiplied with measurement only used. Measured in bytes.
     cycle_time = 3

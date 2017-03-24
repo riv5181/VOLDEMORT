@@ -1,0 +1,27 @@
+FLOODED: 
+
+===== CYCLE INFORMATION ======
+Cycle Number: 4
+Date Started: 03-24-2017 
+Time Started: 10:41:32 
+Date Ended: 03-24-2017 
+Time Ended: 10:41:42 
+
+===== STATISTICS =====
+Nummber of packets obtained: 19
+Number of packets after filtering: 10
+Number of TCP packets after filtering: 0
+Number of UDP packets after filtering: 0
+Number of ICMP packets after filtering: 10
+Flows detected: 1
+Flows with flooding: 0
+
+===== THRESHOLD VALUES =====
+Old TCP value: 40.0 
+Old UDP value: 55.0 
+Old ICMP value: 5.0 
+New TCP value: 60.0 
+New UDP value: 25.0 
+New ICMP value: 15.0 
+
+===== SUSPICION COUNT =====

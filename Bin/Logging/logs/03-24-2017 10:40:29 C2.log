@@ -1,0 +1,30 @@
+FLOODED: UDP DNS 
+
+===== CYCLE INFORMATION ======
+Cycle Number: 2
+Date Started: 03-24-2017 
+Time Started: 10:40:18 
+Date Ended: 03-24-2017 
+Time Ended: 10:40:28 
+
+===== STATISTICS =====
+Nummber of packets obtained: 69390
+Number of packets after filtering: 67442
+Number of TCP packets after filtering: 0
+Number of UDP packets after filtering: 67442
+Number of ICMP packets after filtering: 0
+Flows detected: 1
+Flows with flooding: 1
+
+===== THRESHOLD VALUES =====
+Old TCP value: 
+Old UDP value: 
+Old ICMP value: 
+New TCP value: 
+New UDP value: 
+New ICMP value: 
+
+===== SUSPICION COUNT =====
+IP Address: 150.75.25.25
+Count: 1
+

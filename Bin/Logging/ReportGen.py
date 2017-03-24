@@ -1,6 +1,11 @@
 from time import gmtime, strftime
 
+tcpData = 0
+udpData = 0
+icmpData = 0
+
 def segregatePackets(packets):
+    global tcpData, udpData, icmpData
     sortedPackets = []
     tcpPackets = []
     udpPackets = []
@@ -11,12 +16,15 @@ def segregatePackets(packets):
     while i < max:
         if packets[i].protocol == 'TCP':
             tcpPackets.append(packets[i])
+            tcpData = tcpData + packets[i].size
 
         elif packets[i].protocol == 'UDP':
             udpPackets.append(packets[i])
+            udpData = udpData + packets[i].size
 
         else:
             icmpPackets.append(packets[i])
+            icmpData = icmpData + packets[i].size
 
         max = len(packets)
         i = i + 1
@@ -105,6 +113,11 @@ def createReport(curCycle, cur, numPackets, numAfter, numFlows, withFlood, lenPa
     report.close()
 
 def createReportNoFlood(currSettings, timeStart, timeEnd, numPackets, packets):
+    global tcpData, udpData, icmpData
+    tcpData = 0
+    udpData = 0
+    icmpData = 0
+
     location = "/home/voldemort/Desktop/IMPLEMENTATION/Bin/Logging/logs/"
     fileName = str(strftime("%m-%d-%Y %H:%M:%S NF", gmtime()))
 
@@ -117,19 +130,22 @@ def createReportNoFlood(currSettings, timeStart, timeEnd, numPackets, packets):
     temp = segregatePackets(packets)
 
     report.write("===== STATISTICS =====" + "\n")
-    report.write("Nummber of packets obtained: " + str(numPackets) + "\n")
+    report.write("Nummber of packets obtained (filtered): " + str(numPackets) + "\n")
     report.write("Number of TCP packets: " + str(len(temp[0])) + "\n")
+    report.write("Size of ALL TCP packets: " + str(tcpData) + " bytes\n")
     report.write("Number of UDP packets: " + str(len(temp[1])) + "\n")
+    report.write("Size of ALL UDP packets: " + str(udpData) + " bytes\n")
     report.write("Number of ICMP packets: " + str(len(temp[2])) + "\n")
+    report.write("Size of ALL ICMP packets: " + str(icmpData) + " bytes\n\n")
 
     # Service (Percentage) Threshold WILL ALWAYS stay the same, but it
     # doesn't mean it won't be logged. It adjusts based on prot threshold, technically.
     report.write("===== THRESHOLD VALUES =====" + "\n")
     report.write("Old TCP value: " + str(currSettings.tcpThreshold) + "\n")
-    report.write("Old UDP value: " + str(currSettings.tcpThreshold) + "\n")
-    report.write("Old ICMP value: " + str(currSettings.tcpThreshold) + "\n")
+    report.write("Old UDP value: " + str(currSettings.udpThreshold) + "\n")
+    report.write("Old ICMP value: " + str(currSettings.icmpThreshold) + "\n")
     report.write("New TCP value: " + str(currSettings.tcpThreshold) + "\n")
-    report.write("New UDP value: " + str(currSettings.tcpThreshold) + "\n")
-    report.write("New ICMP value: " + str(currSettings.tcpThreshold) + "\n\n")
+    report.write("New UDP value: " + str(currSettings.udpThreshold) + "\n")
+    report.write("New ICMP value: " + str(currSettings.icmpThreshold) + "\n\n")
 
     report.close()

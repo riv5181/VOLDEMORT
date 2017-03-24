@@ -41,10 +41,10 @@ try:
 
         print('BEFORE FILTER: ' + str(len(packets)))
         blah1 = len(packets)
-        noFPackets = packets
         packets = Preprocessor.filterObtainedPackets(packets, mainIP, network)
         print('AFTER FILTER: ' + str(len(packets)))
         blah2 = len(packets)
+        noFPackets = packets
         print(' ')
 
         ifFlood = Preprocessor.analyzePacketswThresh(packets,currSettings)
@@ -93,7 +93,7 @@ try:
                 #raw_input("Press Enter to Continue")
 
         else:
-            Logging.createReportNoFlood(currSettings, timeStart, timeEnd, blah1, noFPackets)
+            Logging.createReportNoFlood(currSettings, timeStart, timeEnd, blah2, noFPackets)
             packets = []
             flows = []
             timeStart = ''

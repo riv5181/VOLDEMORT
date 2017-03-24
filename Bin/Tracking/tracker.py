@@ -49,17 +49,18 @@ def checkFloodingExist(flows):
 def tracker(flows, settings, timeStart, timeEnd, db, cur):
     global cycle_count, cycle_noFlood, icmp, tcp, udp, noMoreFlood, current_cycle_time
     data = []
-
+    #'''
+    cur.execute("INSERT INTO cycle (cycle_time,date_start,time_start,date_end,time_end) VALUES (%s,%s,%s,%s,%s)",
+                (current_cycle_time, timeStart[0:10], timeStart[11:19], timeEnd[0:10], timeEnd[11:19]))
+    db.commit()
+    cur.execute("SELECT MAX(idcycle) FROM cycle")
+    obtainedcurID = cur.fetchall()
+    curID = int(obtainedcurID[0][0])
+    #'''
     if checkFloodingExist(flows):
         #Insert code to put flows to logging module
         noMoreFlood = False
         #'''
-        cur.execute("INSERT INTO cycle (cycle_time,date_start,time_start,date_end,time_end) VALUES (%s,%s,%s,%s,%s)",
-                    (current_cycle_time,timeStart[0:10],timeStart[11:19],timeEnd[0:10],timeEnd[11:19]))
-        db.commit()
-        cur.execute("SELECT MAX(idcycle) FROM cycle")
-        obtainedcurID = cur.fetchall()
-        curID = int(obtainedcurID[0][0])
         i = 0
         max = len(flows)
         while i < max:
@@ -75,12 +76,6 @@ def tracker(flows, settings, timeStart, timeEnd, db, cur):
         # Insert code to put flows to logging module
         noMoreFlood = False
         #'''
-        cur.execute("INSERT INTO cycle (date_start,time_start,date_end,time_end) VALUES (%s, %s, %s, %s)",
-                    (timeStart[0:10],timeStart[11:19],timeEnd[0:10],timeEnd[11:19]))
-        db.commit()
-        cur.execute("SELECT MAX(idcycle) FROM cycle")
-        obtainedcurID = cur.fetchall()
-        curID = int(obtainedcurID[0][0])
         i = 0
         max = len(flows)
         while i < max:
