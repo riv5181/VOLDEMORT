@@ -13,27 +13,6 @@ def updateCurrentThreshold(list):
     else:
         return 0
 
-
-def getLowest(list):
-    return min(float(s) for s in list)
-
-
-def setPriority(list, IndexOfData):
-    priorityList = [0, 0, 0]
-    if (IndexOfData == 0):
-        priorityList[0] = 0
-        priorityList[1] = 2
-        priorityList[2] = 1
-    elif (IndexOfData == 1):
-        priorityList[0] = 2
-        priorityList[1] = 0
-        priorityList[2] = 1
-    if (IndexOfData == 2):
-        priorityList[0] = 2
-        priorityList[1] = 1
-        priorityList[2] = 0
-
-
 def getNeededBW(list, Value, IndexOfData):  # Value is the caculated data needed
     return Value - list[IndexOfData]
 
@@ -137,6 +116,21 @@ def getBackAdjustment(list, IndexOfdata, NeededBW, Original):  # Adjusts The Val
             ThresholdList[2] -= NeededBW
 
 
+def setInitStateList(list):  # Adjusts The Value of The BW
+    if (list[0] > OriginalList[0]):
+        StateList[0] = 1
+    else:
+        StateList[0] = 0
+    if (list[1] > OriginalList[1]):
+        StateList[1] = 1
+    else:
+        StateList[1] = 0
+    if (list[2] > OriginalList[2]):
+        StateList[2] = 1
+    else:
+        StateList[2] = 0
+
+
 def CalculateThreshold(ThresholdList, LimitList, MasterHitList, BooleanList, IndexOfData, interval, currData, counter):
     if (currData[IndexOfData] > ThresholdList[IndexOfData]):
 
@@ -230,13 +224,13 @@ BooleanList.append(b_BList)
 BooleanList.append(c_BList)
 currData = []
 OriginalList = ThresholdList
-
+loopTester = 0
 while (True):
     currData = []
 
-    TCPList = [random.uniform(60, 70), random.uniform(60, 70), random.uniform(60, 70)]
-    UDPList = [0,0,0]
-    ICMPList = [0,0,0]
+    TCPList = [random.uniform(80, 80), random.uniform(80, 80), random.uniform(80, 80)];
+    UDPList = [0, 0, 0];
+    ICMPList = [0, 0, 0];
     currData.append(updateCurrentThreshold(TCPList))
     currData.append(updateCurrentThreshold(UDPList))
     currData.append(updateCurrentThreshold(ICMPList))
@@ -246,6 +240,9 @@ while (True):
     print("New Data: ", currData[1])
     print("New Data: ", currData[2])
     #  print ("Current Threshold: " ,Threshold )
+    if (loopTester == 0):
+        loopTester = 1
+        setInitStateList(currData)
 
     for x in range(0, 3):
         CalculateThreshold(ThresholdList, LimitList, MasterHitList, BooleanList, x, interval, currData, counter)

@@ -22,9 +22,11 @@ BooleanList.append(b_BList)
 BooleanList.append(c_BList)
 currData = []
 OriginalList = ThresholdList
+loopTester = 0
 
 def intializeValues():
     global ThresholdList, LimitList, OriginalList, MasterHitList, BooleanList, StateList, currData, OriginalList
+    global loopTester
     ThresholdList = []  # this list is the thresholds
     LimitList = []  # these are the lower limits
     OriginalList = []  # un edited List
@@ -46,13 +48,18 @@ def intializeValues():
     BooleanList.append(c_BList)
     currData = []
     OriginalList = ThresholdList
+    loopTester = 0
 
 def pht(list):
     sum = 0
     for numbers in list:
         sum += numbers
     ave = sum / (len(list))
-    return (ave)
+    if (len(list) != 0):
+        ave = sum / (len(list))
+        return (ave)
+    else:
+        return 0
 
 
 def getNeededBW(list, Value, IndexOfData):  # Value is the caculated data needed
@@ -160,8 +167,23 @@ def getBackAdjustment(list, IndexOfdata, NeededBW, Original):  # Adjusts The Val
             ThresholdList[1] += NeededBW
             ThresholdList[2] -= NeededBW
 
+def setInitStateList(list):  # Adjusts The Value of The BW
+    global OriginalList, StateList
+    if (list[0] > OriginalList[0]):
+        StateList[0] = 1
+    else:
+        StateList[0] = 0
+    if (list[1] > OriginalList[1]):
+        StateList[1] = 1
+    else:
+        StateList[1] = 0
+    if (list[2] > OriginalList[2]):
+        StateList[2] = 1
+    else:
+        StateList[2] = 0
+
 def updateThreshold(data, currSettings, adminSettings, db, cur):
-    global ThresholdList, LimitList, MasterHitList, BooleanList, currData
+    global ThresholdList, LimitList, MasterHitList, BooleanList, currData, loopTester
     newSettings = Settings('','','','','','','','','','','','','','','','','')
     currData = []
 
@@ -189,6 +211,10 @@ def updateThreshold(data, currSettings, adminSettings, db, cur):
     currData.append(pht(data[1]))
     currData.append(pht(data[2]))
 
+    if (loopTester == 0):
+        loopTester = 1
+        setInitStateList(currData)
+
     if currData[0] < adminSettings.tcplimit and currData[1] < adminSettings.udplimit \
         and currData[2] < adminSettings.icmplimit:
         setattr(newSettings, 'tcpThreshold', float("%.2f" % adminSettings.tcpThreshold))
@@ -211,7 +237,6 @@ def updateThreshold(data, currSettings, adminSettings, db, cur):
     else:
         for x in range(0, 3):
             if (currData[x] > ThresholdList[x]):
-
                 if (BooleanList[x][0] == 1 or BooleanList[x][2] == 0):
                     MasterHitList[x].append(currData[x])
                     BooleanList[x][2] += 1
@@ -220,11 +245,9 @@ def updateThreshold(data, currSettings, adminSettings, db, cur):
                     MasterHitList[x] = []
                     BooleanList[x][2] = 1
                     MasterHitList[x].append(currData[x])
-
                 else:
                     BooleanList[x][2] = 0
                     MasterHitList[x] = []
-
                 BooleanList[x][0] = 1
                 BooleanList[x][1] = 0
 
@@ -232,16 +255,13 @@ def updateThreshold(data, currSettings, adminSettings, db, cur):
                 if (BooleanList[x][1] == 1 or BooleanList[x][2] == 0):
                     MasterHitList[x].append(currData[x])
                     BooleanList[x][2] += 1
-
                 elif (BooleanList[x][1] == 0 and BooleanList[x][2] >= 1):
                     MasterHitList[x] = []
                     BooleanList[x][2] = 1
                     MasterHitList[x].append(currData[x])
-
                 else:
                     BooleanList[x][2] = 0
                     MasterHitList[x] = []
-
                 BooleanList[x][0] = 0
                 BooleanList[x][1] = 1
 
@@ -258,6 +278,21 @@ def updateThreshold(data, currSettings, adminSettings, db, cur):
                 getBackAdjustment(ThresholdList, x, NeededBW, OriginalList)
                 MasterHitList[x] = []
                 BooleanList[x][2] = 0
+
+
+        if ThresholdList[2] == 0:
+            if currData > currSettings.udpThreshold:
+                value = currSettings.icmpThreshold - currSettings.icmplimit
+                ThresholdList[0] = currSettings.tcpThreshold + value
+                ThresholdList[1] = currSettings.udpThreshold
+                ThresholdList[2] = currSettings.icmpThreshold - value
+
+            else:
+                value1 = currSettings.udpThreshold - currSettings.udplimit
+                value2 = currSettings.icmpThreshold - currSettings.icmplimit
+                ThresholdList[0] = currSettings.tcpThreshold + value1 + value2
+                ThresholdList[1] = currSettings.udpThreshold - value1
+                ThresholdList[2] = currSettings.icmpThreshold - value2
 
         setattr(newSettings, 'tcpThreshold', float("%.2f" % ThresholdList[0]))
         setattr(newSettings, 'udpThreshold', float("%.2f" % ThresholdList[1]))
