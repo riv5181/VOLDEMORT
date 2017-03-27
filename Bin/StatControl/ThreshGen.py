@@ -280,8 +280,8 @@ def updateThreshold(data, currSettings, adminSettings, db, cur):
                 BooleanList[x][2] = 0
 
 
-        if ThresholdList[2] > currSettings.icmplimit:
-            if currData > currSettings.udpThreshold:
+        if ThresholdList[2] < currSettings.icmplimit:
+            if currData[1] > currSettings.udpThreshold:
                 value = currSettings.icmpThreshold - currSettings.icmplimit
                 ThresholdList[0] = currSettings.tcpThreshold + value
                 ThresholdList[1] = currSettings.udpThreshold
