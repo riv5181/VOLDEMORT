@@ -44,8 +44,9 @@ def printResult(cur, query):
     j = 0
     while i < len(output):
         while j < len(output[i]):
-            string = string + str(output[i][j])
-            string = string + " "
+            if string != 'NULL' or string != 'OTHER':
+                string = string + str(output[i][j])
+                string = string + " "
             j = j + 1
         i = i + 1
 
@@ -56,7 +57,7 @@ def createReport(curCycle, cur, numPackets, numAfter, numFlows, withFlood, lenPa
     fileName = str(strftime("%m-%d-%Y %H:%M:%S", gmtime()))
 
     report = open(location+fileName+" C" +str(curCycle)+".log","w")
-    query = "SELECT protocol, service FROM flow f WHERE idcycle = (SELECT max(idcycle) FROM cycle) AND status = 1"
+    query = "SELECT protocol, service, packetflg FROM flow f WHERE idcycle = (SELECT max(idcycle) FROM cycle) AND status = 1"
     report.write("FLOODED: " + printResult(cur,query) + "\n\n") #Insert Protocol and/or Services. Will use separate function.
 
     report.write("===== CYCLE INFORMATION ======" + "\n")
