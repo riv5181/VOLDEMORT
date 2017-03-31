@@ -57,12 +57,8 @@ def createReport(currSettings, curCycle, cur, numPackets, numAfter, numFlows, wi
     fileName = str(strftime("%m-%d-%Y %H:%M:%S", localtime()))
 
     report = open(location+fileName+" C" +str(curCycle)+".log","w")
-<<<<<<< HEAD
     query = "SELECT protocol, service, packetflg FROM flow f " \
             "WHERE idcycle = (SELECT max(idcycle) FROM cycle) AND status = 1"
-=======
-    query = "SELECT protocol, service, packetflg FROM flow f WHERE idcycle = (SELECT max(idcycle) FROM cycle) AND status = 1"
->>>>>>> dfff112ad0f03b4b18b7753ddb077a006010476a
     report.write("FLOODED: " + printResult(cur,query) + "\n\n") #Insert Protocol and/or Services. Will use separate function.
 
     report.write("===== CYCLE INFORMATION ======" + "\n")
