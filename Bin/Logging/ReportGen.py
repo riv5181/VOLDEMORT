@@ -1,4 +1,4 @@
-from time import gmtime, strftime
+from time import gmtime, strftime, localtime
 
 tcpData = 0
 udpData = 0
@@ -44,19 +44,21 @@ def printResult(cur, query):
     j = 0
     while i < len(output):
         while j < len(output[i]):
-            string = string + str(output[i][j])
-            string = string + " "
+            if string != 'NULL' or string != 'OTHER':
+                string = string + str(output[i][j])
+                string = string + " "
             j = j + 1
         i = i + 1
 
     return string
 
-def createReport(curCycle, cur, numPackets, numAfter, numFlows, withFlood, lenPackets):
+def createReport(currSettings, curCycle, cur, numPackets, numAfter, numFlows, withFlood, lenPackets):
     location = "/home/voldemort/Desktop/IMPLEMENTATION/Bin/Logging/logs/"
-    fileName = str(strftime("%m-%d-%Y %H:%M:%S", gmtime()))
+    fileName = str(strftime("%m-%d-%Y %H:%M:%S", localtime()))
 
     report = open(location+fileName+" C" +str(curCycle)+".log","w")
-    query = "SELECT protocol, service FROM flow f WHERE idcycle = (SELECT max(idcycle) FROM cycle) AND status = 1"
+    query = "SELECT protocol, service, packetflg FROM flow f " \
+            "WHERE idcycle = (SELECT max(idcycle) FROM cycle) AND status = 1"
     report.write("FLOODED: " + printResult(cur,query) + "\n\n") #Insert Protocol and/or Services. Will use separate function.
 
     report.write("===== CYCLE INFORMATION ======" + "\n")
@@ -71,12 +73,24 @@ def createReport(curCycle, cur, numPackets, numAfter, numFlows, withFlood, lenPa
     query = "SELECT time_end  FROM cycle WHERE idcycle = (SELECT max(idcycle) FROM cycle)"
     report.write("Time Ended: " + printResult(cur,query) + "\n\n")
 
+    s0 = (float(lenPackets[3]) / currSettings.bandwidth) * 100
+    s1 = (float(lenPackets[4]) / currSettings.bandwidth) * 100
+    s2 = (float(lenPackets[5]) / currSettings.bandwidth) * 100
+    s3 = lenPackets[3] + lenPackets[4] + lenPackets[5]
+
     report.write("===== STATISTICS =====" + "\n")
     report.write("Nummber of packets obtained: " + str(numPackets) + "\n")
     report.write("Number of packets after filtering: " + str(numAfter) + "\n")
+    report.write("Total packet size after filtering: " + str(s3) + " bytes\n")
     report.write("Number of TCP packets after filtering: " + str(lenPackets[0]) + "\n")
+    report.write("Percentage of TCP packets: " + str(s0) + "% \n")
+    report.write("Size of ALL TCP packets after filtering: " + str(lenPackets[3]) + " bytes\n")
     report.write("Number of UDP packets after filtering: " + str(lenPackets[1]) + "\n")
+    report.write("Percentage of UDP packets: " + str(s1) + "% \n")
+    report.write("Size of ALL UDP packets after filtering: " + str(lenPackets[4]) + " bytes\n")
     report.write("Number of ICMP packets after filtering: " + str(lenPackets[2]) + "\n")
+    report.write("Percentage of ICMP packets: " + str(s2) + "% \n")
+    report.write("Size of ALL ICMP packets after filtering: " + str(lenPackets[5]) + " bytes\n")
     report.write("Flows detected: " + str(numFlows) + "\n")
     report.write("Flows with flooding: " + str(withFlood) + "\n\n")
 
@@ -119,7 +133,7 @@ def createReportNoFlood(currSettings, timeStart, timeEnd, numPackets, packets):
     icmpData = 0
 
     location = "/home/voldemort/Desktop/IMPLEMENTATION/Bin/Logging/logs/"
-    fileName = str(strftime("%m-%d-%Y %H:%M:%S NF", gmtime()))
+    fileName = str(strftime("%m-%d-%Y %H:%M:%S NF", localtime()))
 
     report = open(location+fileName+".log","w")
 
@@ -128,14 +142,22 @@ def createReportNoFlood(currSettings, timeStart, timeEnd, numPackets, packets):
     report.write("Time Ended: " + timeEnd + "\n\n")
 
     temp = segregatePackets(packets)
+    tcpPer = (float(tcpData) / currSettings.bandwidth) * 100
+    udpPer = (float(udpData) / currSettings.bandwidth) * 100
+    icmpPer = (float(icmpData) / currSettings.bandwidth) * 100
+    total = tcpData + udpData + icmpData
 
     report.write("===== STATISTICS =====" + "\n")
     report.write("Nummber of packets obtained (filtered): " + str(numPackets) + "\n")
+    report.write("Total Size of all Packets (filtered): " + str(total) + "\n")
     report.write("Number of TCP packets: " + str(len(temp[0])) + "\n")
+    report.write("Percentage of TCP packets: " + str(tcpPer) + "% \n")
     report.write("Size of ALL TCP packets: " + str(tcpData) + " bytes\n")
     report.write("Number of UDP packets: " + str(len(temp[1])) + "\n")
+    report.write("Percentage of UDP packets: " + str(udpPer) + "% \n")
     report.write("Size of ALL UDP packets: " + str(udpData) + " bytes\n")
     report.write("Number of ICMP packets: " + str(len(temp[2])) + "\n")
+    report.write("Percentage of ICMP packets: " + str(icmpPer) + "% \n")
     report.write("Size of ALL ICMP packets: " + str(icmpData) + " bytes\n\n")
 
     # Service (Percentage) Threshold WILL ALWAYS stay the same, but it

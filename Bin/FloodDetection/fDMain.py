@@ -28,6 +28,18 @@ def fDModule(packets, settings):
     lenPackets.append(len(sPackets[1]))
     lenPackets.append(len(sPackets[2]))
 
+    i = 0
+    totalsize = 0
+    while i < 3:
+        j = 0
+        size = 0
+        while j < len(sPackets[i]):
+            size = size + sPackets[i][j].size
+            j = j + 1
+        totalsize = totalsize + size
+        lenPackets.append(size)
+        i = i + 1
+
     #This segment searches for the priority protocol (Highest Threshold). It will be analyzed first for flows.
     if len(sPackets[0]) > len (sPackets[1]) and len(sPackets[0]) > len (sPackets[2]):
         flows2 = deltaFlowSM.createFlows(flows2, sPackets[0])

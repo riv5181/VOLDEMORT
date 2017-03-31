@@ -1,0 +1,37 @@
+FLOODED: ICMP ECHO-REPLY NULL 
+
+===== CYCLE INFORMATION ======
+Cycle Number: 2
+Date Started: 03-31-2017 
+Time Started: 19:51:33 
+Date Ended: 03-31-2017 
+Time Ended: 19:51:53 
+
+===== STATISTICS =====
+Nummber of packets obtained: 123759
+Number of packets after filtering: 61872
+Total packet size after filtering: 6064178 bytes
+Number of TCP packets after filtering: 0
+Percentage of TCP packets: 0.0% 
+Size of ALL TCP packets after filtering: 0 bytes
+Number of UDP packets after filtering: 0
+Percentage of UDP packets: 0.0% 
+Size of ALL UDP packets after filtering: 0 bytes
+Number of ICMP packets after filtering: 61872
+Percentage of ICMP packets: 26.9519022222% 
+Size of ALL ICMP packets after filtering: 6064178 bytes
+Flows detected: 2
+Flows with flooding: 1
+
+===== THRESHOLD VALUES =====
+Old TCP value: 
+Old UDP value: 
+Old ICMP value: 
+New TCP value: 
+New UDP value: 
+New ICMP value: 
+
+===== SUSPICION COUNT =====
+IP Address: 150.75.25.25
+Count: 1
+

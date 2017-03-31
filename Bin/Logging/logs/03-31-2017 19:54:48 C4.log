@@ -1,0 +1,37 @@
+FLOODED: TCP OTHER SYN-ACK 
+
+===== CYCLE INFORMATION ======
+Cycle Number: 4
+Date Started: 03-31-2017 
+Time Started: 19:54:26 
+Date Ended: 03-31-2017 
+Time Ended: 19:54:46 
+
+===== STATISTICS =====
+Nummber of packets obtained: 141825
+Number of packets after filtering: 129486
+Total packet size after filtering: 14761448 bytes
+Number of TCP packets after filtering: 129484
+Percentage of TCP packets: 65.6052266667% 
+Size of ALL TCP packets after filtering: 14761176 bytes
+Number of UDP packets after filtering: 0
+Percentage of UDP packets: 0.0% 
+Size of ALL UDP packets after filtering: 0 bytes
+Number of ICMP packets after filtering: 2
+Percentage of ICMP packets: 0.00120888888889% 
+Size of ALL ICMP packets after filtering: 272 bytes
+Flows detected: 2
+Flows with flooding: 1
+
+===== THRESHOLD VALUES =====
+Old TCP value: 40.0 
+Old UDP value: 54.0 
+Old ICMP value: 5.0 
+New TCP value: 79.0 
+New UDP value: 15.0 
+New ICMP value: 5.0 
+
+===== SUSPICION COUNT =====
+IP Address: 150.75.25.25
+Count: 1
+

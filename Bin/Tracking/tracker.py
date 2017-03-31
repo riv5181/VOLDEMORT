@@ -70,20 +70,19 @@ def tracker(flows, settings, timeStart, timeEnd, db, cur):
                             flows[i].protocol,flows[i].service,flows[i].pktFlag,flows[i].datasize, 1))
                 db.commit()
             i = i + 1
-        #'''
+          #'''
 
-    if len(flows) > settings.maxFlows:
+    elif len(flows) > settings.maxFlows:
         # Insert code to put flows to logging module
         noMoreFlood = False
         #'''
         i = 0
         max = len(flows)
         while i < max:
-            if flows[i].isFlood == True:
-                cur.execute("INSERT INTO flow (idcycle,src_ip,dest_ip,protocol,service,packetflg,datasize,status) "
-                            "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",(curID,flows[i].sourceIP,flows[i].destIP,
-                            flows[i].protocol,flows[i].service,flows[i].pktFlag,flows[i].datasize, 0))
-                db.commit()
+            cur.execute("INSERT INTO flow (idcycle,src_ip,dest_ip,protocol,service,packetflg,datasize,status) "
+                        "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",(curID,flows[i].sourceIP,flows[i].destIP,
+                        flows[i].protocol,flows[i].service,flows[i].pktFlag,flows[i].datasize, 0))
+            db.commit()
             i = i + 1
         #'''
 

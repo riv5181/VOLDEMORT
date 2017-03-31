@@ -1,0 +1,34 @@
+FLOODED: 
+
+===== CYCLE INFORMATION ======
+Cycle Number: 6
+Date Started: 03-31-2017 
+Time Started: 19:56:31 
+Date Ended: 03-31-2017 
+Time Ended: 19:56:51 
+
+===== STATISTICS =====
+Nummber of packets obtained: 39
+Number of packets after filtering: 20
+Total packet size after filtering: 2720 bytes
+Number of TCP packets after filtering: 0
+Percentage of TCP packets: 0.0% 
+Size of ALL TCP packets after filtering: 0 bytes
+Number of UDP packets after filtering: 0
+Percentage of UDP packets: 0.0% 
+Size of ALL UDP packets after filtering: 0 bytes
+Number of ICMP packets after filtering: 20
+Percentage of ICMP packets: 0.0120888888889% 
+Size of ALL ICMP packets after filtering: 2720 bytes
+Flows detected: 1
+Flows with flooding: 0
+
+===== THRESHOLD VALUES =====
+Old TCP value: 60.0 
+Old UDP value: 25.0 
+Old ICMP value: 15.0 
+New TCP value: 60.0 
+New UDP value: 25.0 
+New ICMP value: 15.0 
+
+===== SUSPICION COUNT =====

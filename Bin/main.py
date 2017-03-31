@@ -1,5 +1,5 @@
 import sys, socket, fcntl, struct, MySQLdb, Preprocessor, StatControl, FloodDetection, Tracking, Logging
-from time import gmtime, strftime
+from time import gmtime, strftime, localtime
 from threading import Thread
 from classes import packet as thePacket
 
@@ -35,9 +35,9 @@ Tracking.setCurrCycleTime(int(obtainedcurID[0][0]) + 1)
 
 try:
     while True:
-        timeStart = strftime("%m-%d-%Y %H:%M:%S", gmtime())
+        timeStart = strftime("%m-%d-%Y %H:%M:%S", localtime())
         packets = Preprocessor.obtainPackets(device1, maxTime1)
-        timeEnd = strftime("%m-%d-%Y %H:%M:%S", gmtime())
+        timeEnd = strftime("%m-%d-%Y %H:%M:%S", localtime())
 
         print('BEFORE FILTER: ' + str(len(packets)))
         blah1 = len(packets)
@@ -62,7 +62,7 @@ try:
                 timeEnd = ''
                 packets = []
                 flows = []
-                Logging.createReport(Tracking.getCurrCycleTime(), cur, blah1, blah2, blah3, blah4,
+                Logging.createReport(currSettings,Tracking.getCurrCycleTime(), cur, blah1, blah2, blah3, blah4,
                                      FloodDetection.getLenPackets())
 
             else:
@@ -75,7 +75,7 @@ try:
                 print(' ')
 
                 currSettings = StatControl.updateThreshold(data,currSettings, StatControl.adminSettings, db, cur)
-                Logging.createReport(Tracking.getCurrCycleTime(), cur, blah1, blah2, blah3, blah4,
+                Logging.createReport(currSettings, Tracking.getCurrCycleTime(), cur, blah1, blah2, blah3, blah4,
                                      FloodDetection.getLenPackets())
                 Tracking.setCurrCycleTime(Tracking.getCurrCycleTime() + 1)
 

@@ -1,0 +1,25 @@
+===== CYCLE INFORMATION ======
+Time Started: 03-31-2017 19:56:51
+Time Ended: 03-31-2017 19:57:11
+
+===== STATISTICS =====
+Nummber of packets obtained (filtered): 20
+Total Size of all Packets (filtered): 2720
+Number of TCP packets: 0
+Percentage of TCP packets: 0.0% 
+Size of ALL TCP packets: 0 bytes
+Number of UDP packets: 0
+Percentage of UDP packets: 0.0% 
+Size of ALL UDP packets: 0 bytes
+Number of ICMP packets: 20
+Percentage of ICMP packets: 0.0120888888889% 
+Size of ALL ICMP packets: 2720 bytes
+
+===== THRESHOLD VALUES =====
+Old TCP value: 60.0
+Old UDP value: 25.0
+Old ICMP value: 15.0
+New TCP value: 60.0
+New UDP value: 25.0
+New ICMP value: 15.0
+

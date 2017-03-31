@@ -1,0 +1,37 @@
+FLOODED: UDP DHCP NULL 
+
+===== CYCLE INFORMATION ======
+Cycle Number: 3
+Date Started: 03-31-2017 
+Time Started: 19:52:59 
+Date Ended: 03-31-2017 
+Time Ended: 19:53:19 
+
+===== STATISTICS =====
+Nummber of packets obtained: 171107
+Number of packets after filtering: 171098
+Total packet size after filtering: 17452132 bytes
+Number of TCP packets after filtering: 0
+Percentage of TCP packets: 0.0% 
+Size of ALL TCP packets after filtering: 0 bytes
+Number of UDP packets after filtering: 171094
+Percentage of UDP packets: 77.5626133333% 
+Size of ALL UDP packets after filtering: 17451588 bytes
+Number of ICMP packets after filtering: 4
+Percentage of ICMP packets: 0.00241777777778% 
+Size of ALL ICMP packets after filtering: 544 bytes
+Flows detected: 2
+Flows with flooding: 1
+
+===== THRESHOLD VALUES =====
+Old TCP value: 
+Old UDP value: 
+Old ICMP value: 
+New TCP value: 
+New UDP value: 
+New ICMP value: 
+
+===== SUSPICION COUNT =====
+IP Address: 150.75.25.25
+Count: 1
+

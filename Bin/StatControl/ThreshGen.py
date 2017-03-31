@@ -48,7 +48,7 @@ def intializeValues():
     BooleanList.append(c_BList)
     currData = []
     OriginalList = ThresholdList
-    loopTester = 0
+    #loopTester = 0
 
 def pht(list):
     sum = 0
