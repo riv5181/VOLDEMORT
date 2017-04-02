@@ -16,5 +16,5 @@ class adminSettings:
     udplimit = 15.00 #Minimum possible threshold for UDP; Calculated values may never go beyond the given number
     icmplimit = 5.00 #Minimum possible threshold for ICMP; Calculated values may never go beyond the given number
     #BW is multiplied to how many seconds, then get the 90% of it, since others are used for other protocols not covered
-    bandwidth = 5000#(1250000 * maxTime) * 0.9 #Bandwidth of the network multiplied with measurement only used. Measured in bytes.
+    bandwidth = (1250000 * maxTime) * 0.9 #Bandwidth of the network multiplied with measurement only used. Measured in bytes.
     cycle_time = 3

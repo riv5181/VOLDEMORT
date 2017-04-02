@@ -215,7 +215,7 @@ def updateThreshold(data, currSettings, adminSettings, db, cur):
         setattr(newSettings, 'tcpThreshold', float("%.2f" % adminSettings.tcpThreshold))
         setattr(newSettings, 'udpThreshold', float("%.2f" % adminSettings.udpThreshold))
         setattr(newSettings, 'icmpThreshold', float("%.2f" % adminSettings.icmpThreshold))
-        '''
+        #'''
         cur.execute("SELECT MAX(idcycle) FROM cycle")
         obtainedcurID = cur.fetchall()
         curID = int(obtainedcurID[0][0])
