@@ -14,9 +14,9 @@ MasterHitList.append(zxc)
 
 StateList = [0, 0, 0]
 BooleanList = []
-a_BList = [0, 0, 0]
-b_BList = [0, 0, 0]
-c_BList = [0, 0, 0]
+a_BList = [0, 0]
+b_BList = [0, 0]
+c_BList = [0, 0]
 BooleanList.append(a_BList)
 BooleanList.append(b_BList)
 BooleanList.append(c_BList)
@@ -40,9 +40,9 @@ def intializeValues():
 
     StateList = [0, 0, 0]
     BooleanList = []
-    a_BList = [0, 0, 0]
-    b_BList = [0, 0, 0]
-    c_BList = [0, 0, 0]
+    a_BList = [0, 0]
+    b_BList = [0, 0]
+    c_BList = [0, 0]
     BooleanList.append(a_BList)
     BooleanList.append(b_BList)
     BooleanList.append(c_BList)
@@ -52,23 +52,18 @@ def intializeValues():
 
 def pht(list):
     sum = 0
+
     for numbers in list:
         sum += numbers
+
     ave = sum / (len(list))
+
     if (len(list) != 0):
         ave = sum / (len(list))
         return (ave)
+
     else:
         return 0
-
-
-def getNeededBW(list, Value, IndexOfData):  # Value is the caculated data needed
-    return Value - list[IndexOfData]
-
-
-def getNeededBW2(list, Value, IndexOfData):  # Value is the caculated data needed
-    return list[IndexOfData] - Value
-
 
 def getFloodingAdjustment(list, IndexOfdata, NeededBW, Original):  # Adjusts The Value of The BW
     global ThresholdList, LimitList, StateList
@@ -220,7 +215,7 @@ def updateThreshold(data, currSettings, adminSettings, db, cur):
         setattr(newSettings, 'tcpThreshold', float("%.2f" % adminSettings.tcpThreshold))
         setattr(newSettings, 'udpThreshold', float("%.2f" % adminSettings.udpThreshold))
         setattr(newSettings, 'icmpThreshold', float("%.2f" % adminSettings.icmpThreshold))
-        # '''
+        '''
         cur.execute("SELECT MAX(idcycle) FROM cycle")
         obtainedcurID = cur.fetchall()
         curID = int(obtainedcurID[0][0])
@@ -237,47 +232,26 @@ def updateThreshold(data, currSettings, adminSettings, db, cur):
     else:
         for x in range(0, 3):
             if (currData[x] > ThresholdList[x]):
-                if (BooleanList[x][0] == 1 or BooleanList[x][2] == 0):
-                    MasterHitList[x].append(currData[x])
-                    BooleanList[x][2] += 1
-
-                elif (BooleanList[x][0] == 0 and BooleanList[x][2] >= 1):
-                    MasterHitList[x] = []
-                    BooleanList[x][2] = 1
-                    MasterHitList[x].append(currData[x])
-                else:
-                    BooleanList[x][2] = 0
-                    MasterHitList[x] = []
+                MasterHitList[x].append(currData[x])
                 BooleanList[x][0] = 1
                 BooleanList[x][1] = 0
 
             elif (currData[x] < ThresholdList[x]):
-                if (BooleanList[x][1] == 1 or BooleanList[x][2] == 0):
-                    MasterHitList[x].append(currData[x])
-                    BooleanList[x][2] += 1
-                elif (BooleanList[x][1] == 0 and BooleanList[x][2] >= 1):
-                    MasterHitList[x] = []
-                    BooleanList[x][2] = 1
-                    MasterHitList[x].append(currData[x])
-                else:
-                    BooleanList[x][2] = 0
-                    MasterHitList[x] = []
+                MasterHitList[x].append(currData[x])
                 BooleanList[x][0] = 0
                 BooleanList[x][1] = 1
 
             if (BooleanList[x][0] == 1):
                 StateList[x] = 1
-                NeededBW = getNeededBW(ThresholdList, pht(MasterHitList[x]), x)
+                NeededBW = currData[x] - ThresholdList[x]
                 getFloodingAdjustment(ThresholdList, x, NeededBW, OriginalList)
                 MasterHitList[x] = []
-                BooleanList[x][2] = 0
 
             elif (BooleanList[x][1] == 1):
                 StateList[x] = 0
-                NeededBW = getNeededBW2(ThresholdList, pht(MasterHitList[x]), x)
+                NeededBW = ThresholdList[x] - currData[x]
                 getBackAdjustment(ThresholdList, x, NeededBW, OriginalList)
                 MasterHitList[x] = []
-                BooleanList[x][2] = 0
 
 
         if ThresholdList[2] < currSettings.icmplimit:
