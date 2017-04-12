@@ -1,5 +1,6 @@
 class adminSettings:
     maxTime = 10 # measured in seconds
+    cycle_time = 3
     device = 'ens33' # network port that will be used
     network = '192.168.0.0/16' # network that will not be used for analysis (your own network)
     maxFlows = 50 # Number of expected flows to enter system. If exceeded, event is considered DDoS
@@ -17,4 +18,3 @@ class adminSettings:
     icmplimit = 5.00 #Minimum possible threshold for ICMP; Calculated values may never go beyond the given number
     #BW is multiplied to how many seconds, then get the 90% of it, since others are used for other protocols not covered
     bandwidth = (1250000 * maxTime) * 0.9 #Bandwidth of the network multiplied with measurement only used. Measured in bytes.
-    cycle_time = 3
