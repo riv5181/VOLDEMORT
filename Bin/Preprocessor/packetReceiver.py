@@ -2,6 +2,9 @@ import socket, pcapy, sys, time, datetime
 from struct import *
 from classes import packet as thePacket
 
+#Codes from packet sniffer obtained from: http://www.binarytides.com/python-packet-sniffer-code-linux/
+#By: Silver Moon
+
 packets = []
 
 def obtainPackets(device, maxTime):
